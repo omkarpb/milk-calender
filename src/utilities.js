@@ -1,3 +1,5 @@
+import {AsyncStorage} from 'react-native';
+
 export function getYearsList() {
 
     let years = [];
@@ -9,3 +11,19 @@ export function getYearsList() {
     }
     return years;
 }
+
+export const save = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const fetch = async key => {
+  try {
+    return AsyncStorage.getItem(key);
+  } catch (e) {
+    throw new Error(e);
+  }
+};

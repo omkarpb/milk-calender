@@ -5,11 +5,7 @@ import { getYearsList } from '../utilities';
 
 export default function CurrentMonthInputModal(props) {
   return (
-    <Modal
-      animationType="slide"
-      transparent={false}
-      visible={props.visible}
-    >
+    
       <View style={styles.modal}>
         <View style={styles.monthInput}>
           <Picker
@@ -34,7 +30,6 @@ export default function CurrentMonthInputModal(props) {
           <Button title='Cancel' onPress={() => props.setVisible(!props.visible)} color={STYLES.themeColor} />
         </View>
       </View>
-    </Modal>
   )
 }
 
@@ -42,8 +37,7 @@ const isIOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   modal: {
-    flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   monthInput: {
     flex: 1,

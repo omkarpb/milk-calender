@@ -1,18 +1,29 @@
 export const MONTHS = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec'
 ];
 
+export const DAYS = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat'
+]
+
 export const STYLES = {
-    themeColor: '#61DAFB'
+    themeColor: '#61DAFB',
+    backgroundDark: '#333'
 }

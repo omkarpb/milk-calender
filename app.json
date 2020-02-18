@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MilkCalender",
-    "slug": "MilkCalender",
+    "name": "MilkCalendar",
+    "slug": "MilkCalendar",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [

@@ -4,6 +4,7 @@ import HomeScreen from './src/HomeScreen';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import {STYLES} from './src/constants';
+import DayItemDetailsModalScreen from './src/components/DayItemDetailsModalScreen';
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
 
 const MainStack = createStackNavigator(
   {
-    Home: HomeScreen
+    Home: HomeScreen,
   },
   {
     initialRouteName: 'Home',
@@ -32,4 +33,18 @@ const MainStack = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(MainStack);
+const rootStack = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack,
+    },
+    DayItemDetailsModal: {
+      screen: DayItemDetailsModalScreen,
+    },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  }
+)
+const AppContainer = createAppContainer(rootStack);

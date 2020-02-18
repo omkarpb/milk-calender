@@ -5,7 +5,7 @@ import DaysList from './components/DaysList';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Milk Calender',
+    title: 'Milk Calendar',
   };
 
   constructor(props) {
@@ -32,7 +32,7 @@ export default class HomeScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
           <CurrentMonthInput selectedMonth={this.state.month} selectedYear={this.state.year} setSelectedMonth={this.setMonth} setSelectedYear={this.setYear} {...this.props} />
-          <DaysList month={this.state.month} year={this.state.year} />
+          <DaysList month={this.state.month} year={this.state.year} {...this.props}/>
       </SafeAreaView>
     );
   }
