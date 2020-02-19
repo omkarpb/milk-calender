@@ -1,79 +1,131 @@
 import React from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput, Text } from 'react-native';
+import { Button, CheckBox } from 'react-native-elements'
+import { addOrReplaceItem, addDayEntry } from '../storage';
 import { STYLES } from '../constants';
-import { Button } from 'react-native-elements'
-import { addItem, getItems } from '../storage';
-import PickerCustom from '../elements/PickerCustom';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 export default class AddItemForm extends React.Component {
+  static navigationOptions = {
+    title: 'Add Item',
+  };
   constructor(props) {
     super(props);
     this.state = {
-      item: '',
+      itemName: '',
       price: '',
       quantity: '',
       unit: '',
-      dateRange: 'Apply only for this day'
+      dateRange: 'Apply only for this day',
+      items: props.navigation.getParam('items'),
+      date: props.navigation.getParam('date'),
+      month: props.navigation.getParam('month'),
+      year: props.navigation.getParam('year'),
+      itemNames: [],
+      itemNameDialogVisible: false,
+      applyItemChecked: false, // Apply for whole month
+      selectedItemId: ''
     }
     this.onChangeValue = this.onChangeValue.bind(this);
+    this.onItemNameSelect = this.onItemNameSelect.bind(this);
+    this.onDialogDismiss = this.onDialogDismiss.bind(this);
+    this.saveItem = this.saveItem.bind(this);
   }
   onChangeValue(key, text) {
     this.setState({ [key]: text });
   }
+  componentDidMount() {
+    const items = this.state.items;
+    let itemNames = items && items.length > 0 && items.map(item => {
+      return {
+        id: item.itemId,
+        name: item.itemName
+      }
+    });
+    if(!itemNames) {
+      itemNames = [];
+    }
+    this.setState({itemNames})
+  }
+  onItemNameSelect(item) {
+    if(item.id === 1) {
+      this.setState({itemNameDialogVisible: true, })
+    } else {
+      this.setState({selectedItemId: item.id, itemName: item.name})
+    }
+  }
+  onDialogDismiss() {
+    this.setState({itemNameDialogVisible: false})
+  }
+  async saveItem() {
+    const newItemId = await addOrReplaceItem({
+      itemName: this.state.itemName,
+      unit: this.state.unit,
+      price: this.state.price,
+    });
+    await addDayEntry(this.state.date, this.state.month, this.state.year, newItemId, this.state.quantity);
+  }
   render() {
     return (
       <View style={styles.formContainer}>
-        <TextInput
-          style={styles.textControl}
-          onChangeText={text => this.onChangeValue('item', text)}
-          value={this.state.item}
-          placeholder='Item name e.g. Milk'
-          autoCapitalize='words'/>
+        <Text>Name</Text>
+        <SearchableDropdown 
+          items={this.state.itemNames}
+          onItemSelect={this.onItemNameSelect}
+          itemStyle={styles.dropdownItem}
+          itemsContainerStyle={{ maxHeight: 140 }}
+          resetValue={false}
+          onTextChange={(text) => this.onChangeValue('itemName', text)}
+          textInputProps={
+            {
+              placeholder: 'Item name eg. Milk',
+              underlineColorAndroid: "transparent",
+              style: styles.textControl
+            }
+          }
+          listProps={
+            {
+              nestedScrollEnabled: true,
+            }
+          }/>
+        <Text>Price</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('price', text)}
           value={this.state.price.toString()}
           placeholder='Price per unit e.g. 45' />
+        <Text>Quantity</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('quantity', text)}
           value={this.state.quantity.toString()}
           placeholder='Quantity'
         />
+        <Text>Unit</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('unit', text)}
           value={this.state.unit}
           placeholder='Unit e.g. Ltr'
         />
-        <PickerCustom 
-          value={this.state.dateRange}
-          items={[
-            {label:"Apply only for this day", value:"Apply only for this day"},
-            {label:"Apply for whole month", value:"Apply for whole month"},
-            {label:"Select range", value:"Select range"},
-          ]}
+        <CheckBox
+          center
+          title='Apply this for whole month'
+          checked={this.state.applyItemChecked}
+          onPress={() => this.setState({applyItemChecked: !this.state.applyItemChecked})}
         />
         <View style={styles.buttonRow}>
-          <Button 
-            title='Add'
-            onPress={() => {
-              addItem({ name: this.state.item.toLowerCase(), price: this.state.price, quantity: this.state.quantity, unit: this.state.unit})
-              .then(() => {
-                // this.props.navigation.navigate('Home');
-                this.setState({ item: '', price: '', quantity: '', unit: '' })
-                return getItems();
-              }).then(items => {
-                console.log('Items ', items);
-              }).catch(err => {
-                console.error(err);
-            });
-            }
-          }
-            color={STYLES.themeColor}
+          <Button
+            title='Save'
             buttonStyle={styles.button}
-            icon={{name: 'save', type:'font-awesome', color: '#fff'}}/>
+            icon={{name: 'save', type:'font-awesome', color: '#fff'}}
+            onPress={this.saveItem} />
+          <Button 
+            title='Cancel'
+            onPress={() => this.props.navigation.goBack()}
+            buttonStyle={styles.button} />
         </View>
+        
       </View>
     );
   }
@@ -99,28 +151,13 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start'
-  }
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+  },
+  dropdownItem: {
+    padding: 10,
+    marginTop: 2,
+    backgroundColor: '#ddd',
+    borderColor: '#bbb',
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 3,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'black',
-    borderRadius: 3,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
+    borderRadius: 5,
+  }
 });

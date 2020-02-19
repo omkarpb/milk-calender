@@ -13,9 +13,10 @@ export default function DaysList(props) {
   }
 
   function setVisible(date, month) {
-    props.navigation.navigate('DayItemDetailsModal', {
+    props.navigation.navigate('DayItemDetails', {
       date,
-      month
+      month,
+      year
     });
   }
 
