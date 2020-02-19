@@ -6,7 +6,7 @@ import { getItems } from '../storage';
 
 export default class DayItemDetailsScreen extends React.Component {
 
-  static navigationOptions = ({navigation}) => {
+  static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.getParam('date')} ${navigation.getParam('month')}`
     }
@@ -38,7 +38,7 @@ export default class DayItemDetailsScreen extends React.Component {
 
 
   render() {
-    const {date, month, year, items = []} = this.state;
+    const { date, month, year, items = [] } = this.state;
 
     return (
       <View style={styles.mainContainer}>
@@ -76,7 +76,7 @@ export default class DayItemDetailsScreen extends React.Component {
         <View>
           <Button
             title='Add Item'
-            icon={<Icon name="plus" type="font-awesome"/>}
+            icon={<Icon name="plus" type="font-awesome" />}
             iconRight={true}
             onPress={() => this.props.navigation.navigate('AddItemForm', {
               items,

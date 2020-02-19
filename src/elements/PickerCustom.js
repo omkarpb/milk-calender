@@ -1,6 +1,6 @@
 import React from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default function PickerCustom(props) {
   return (

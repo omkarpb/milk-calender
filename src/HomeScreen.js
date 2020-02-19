@@ -22,17 +22,17 @@ export default class HomeScreen extends React.Component {
     this.setYear = this.setYear.bind(this);
   }
   setMonth(month) {
-    this.setState({month: month});
+    this.setState({ month: month });
   }
   setYear(year) {
-    this.setState({year: year});
+    this.setState({ year: year });
   }
   render() {
     console.log('Month ', this.state.month, 'Year', this.state.year);
     return (
       <SafeAreaView style={styles.container}>
-          <CurrentMonthInput selectedMonth={this.state.month} selectedYear={this.state.year} setSelectedMonth={this.setMonth} setSelectedYear={this.setYear} {...this.props} />
-          <DaysList month={this.state.month} year={this.state.year} {...this.props}/>
+        <CurrentMonthInput selectedMonth={this.state.month} selectedYear={this.state.year} setSelectedMonth={this.setMonth} setSelectedYear={this.setYear} {...this.props} />
+        <DaysList month={this.state.month} year={this.state.year} {...this.props} />
       </SafeAreaView>
     );
   }
@@ -40,6 +40,6 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    
+
   }
 })

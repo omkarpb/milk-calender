@@ -32,22 +32,22 @@ export default function DaysList(props) {
 
           return (
             <>
-            <TouchableHighlight onPress={() => setVisible(item.date, item.month)}>
-              <View style={styles.itemContainer}>
-                <View style={styles.dayDetails}>
-                  <Text style={{...styles.upperRow, color: fontColor}}>{item.date} {item.month}</Text>
-                  <Text style={{...styles.lowerRow, color: fontColor}}>{day}</Text>
+              <TouchableHighlight onPress={() => setVisible(item.date, item.month)}>
+                <View style={styles.itemContainer}>
+                  <View style={styles.dayDetails}>
+                    <Text style={{ ...styles.upperRow, color: fontColor }}>{item.date} {item.month}</Text>
+                    <Text style={{ ...styles.lowerRow, color: fontColor }}>{day}</Text>
+                  </View>
+                  <View style={styles.itemDetails}>
+                    <Text style={styles.oneItem}>Milk 1 ltr</Text>
+                    <Text style={styles.oneItem}> Eggs 5 num.</Text>
+                  </View>
+                  <View style={styles.priceDetails}>
+                    <Text style={styles.priceValue}>{'\u20B9'}{50}/-</Text>
+                  </View>
                 </View>
-                <View style={styles.itemDetails}>
-                  <Text style={styles.oneItem}>Milk 1 ltr</Text>
-                  <Text style={styles.oneItem}> Eggs 5 num.</Text>
-                </View>
-                <View style={styles.priceDetails}>
-                  <Text style={styles.priceValue}>{'\u20B9'}{50}/-</Text>
-                </View>
-              </View>
-            </TouchableHighlight>
-          </>
+              </TouchableHighlight>
+            </>
           )
         }}
         keyExtractor={(item) => item.date.toString()}
