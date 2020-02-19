@@ -64,6 +64,12 @@ export default class AddItemForm extends React.Component {
       price: this.state.price,
     });
     await addDayEntry(this.state.date, this.state.month, this.state.year, newItemId, this.state.quantity);
+    this.setState({
+      itemName: '',
+      price: '',
+      quantity: '',
+      unit: ''
+    })
   }
   render() {
     return (
@@ -80,7 +86,8 @@ export default class AddItemForm extends React.Component {
             {
               placeholder: 'Item name eg. Milk',
               underlineColorAndroid: "transparent",
-              style: styles.textControl
+              style: styles.textControl,
+              value:this.state.itemName
             }
           }
           listProps={
@@ -125,7 +132,6 @@ export default class AddItemForm extends React.Component {
             onPress={() => this.props.navigation.goBack()}
             buttonStyle={styles.button} />
         </View>
-        
       </View>
     );
   }
