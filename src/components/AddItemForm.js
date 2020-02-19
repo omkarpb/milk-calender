@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, Text } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements'
-import { addOrReplaceItem, addDayEntry } from '../storage';
+import { addOrReplaceItem, addDayEntry, getItem } from '../storage';
 import { STYLES } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
@@ -42,20 +42,20 @@ export default class AddItemForm extends React.Component {
         name: item.itemName
       }
     });
-    if(!itemNames) {
+    if (!itemNames) {
       itemNames = [];
     }
-    this.setState({itemNames})
+    this.setState({ itemNames })
   }
   onItemNameSelect(item) {
-    if(item.id === 1) {
-      this.setState({itemNameDialogVisible: true, })
+    if (item.id === 1) {
+      this.setState({ itemNameDialogVisible: true, })
     } else {
-      this.setState({selectedItemId: item.id, itemName: item.name})
+      this.setState({ selectedItemId: item.id, itemName: item.name })
     }
   }
   onDialogDismiss() {
-    this.setState({itemNameDialogVisible: false})
+    this.setState({ itemNameDialogVisible: false })
   }
   async saveItem() {
     const newItemId = await addOrReplaceItem({
@@ -69,32 +69,44 @@ export default class AddItemForm extends React.Component {
       price: '',
       quantity: '',
       unit: ''
-    })
+    });
+    this.props.navigation.goBack();
+  }
+  async onSelectItemName(item) {
+    const itemDetails = await getItem(item.id);
+    if (itemDetails) {
+      this.setState({
+        itemName: itemDetails.itemName,
+        price: itemDetails.price,
+        unit: itemDetails.unit,
+      });
+    }
   }
   render() {
     return (
       <View style={styles.formContainer}>
         <Text>Name</Text>
-        <SearchableDropdown 
+        <SearchableDropdown
           items={this.state.itemNames}
           onItemSelect={this.onItemNameSelect}
           itemStyle={styles.dropdownItem}
           itemsContainerStyle={{ maxHeight: 140 }}
           resetValue={false}
           onTextChange={(text) => this.onChangeValue('itemName', text)}
+          onItemSelect={(item) => this.onSelectItemName(item)}
           textInputProps={
             {
               placeholder: 'Item name eg. Milk',
               underlineColorAndroid: "transparent",
               style: styles.textControl,
-              value:this.state.itemName
+              value: this.state.itemName
             }
           }
           listProps={
             {
               nestedScrollEnabled: true,
             }
-          }/>
+          } />
         <Text>Price</Text>
         <TextInput
           style={styles.textControl}
@@ -119,15 +131,15 @@ export default class AddItemForm extends React.Component {
           center
           title='Apply this for whole month'
           checked={this.state.applyItemChecked}
-          onPress={() => this.setState({applyItemChecked: !this.state.applyItemChecked})}
+          onPress={() => this.setState({ applyItemChecked: !this.state.applyItemChecked })}
         />
         <View style={styles.buttonRow}>
           <Button
             title='Save'
             buttonStyle={styles.button}
-            icon={{name: 'save', type:'font-awesome', color: '#fff'}}
+            icon={{ name: 'save', type: 'font-awesome', color: '#fff' }}
             onPress={this.saveItem} />
-          <Button 
+          <Button
             title='Cancel'
             onPress={() => this.props.navigation.goBack()}
             buttonStyle={styles.button} />

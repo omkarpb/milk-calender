@@ -35,6 +35,13 @@ export async function getItems() {
   }
 }
 
+export async function getItem(itemId) {
+  const data = await fetch('items');
+  const items = JSON.parse(data);
+  const item = items.find(item => item.itemId === itemId);
+  return item;
+}
+
 async function addMonthYearData(month, year) {
   const data = await fetch('entries');
   let entries = [];
