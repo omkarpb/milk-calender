@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, Text } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements'
-import { addOrReplaceItem, addDayEntry, getItem } from '../storage';
+import { addOrReplaceItem, addDayEntry, getItem, addDataEntriesForWholeMonth } from '../storage';
 import { STYLES } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
@@ -23,7 +23,7 @@ export default class AddItemForm extends React.Component {
       year: props.navigation.getParam('year'),
       itemNames: [],
       itemNameDialogVisible: false,
-      applyItemChecked: false, // Apply for whole month
+      applyWholeMonthChecked: false, // Apply for whole month
       selectedItemId: ''
     }
     this.onChangeValue = this.onChangeValue.bind(this);
@@ -31,9 +31,11 @@ export default class AddItemForm extends React.Component {
     this.onDialogDismiss = this.onDialogDismiss.bind(this);
     this.saveItem = this.saveItem.bind(this);
   }
+  
   onChangeValue(key, text) {
     this.setState({ [key]: text });
   }
+  
   componentDidMount() {
     const items = this.state.items;
     let itemNames = items && items.length > 0 && items.map(item => {
@@ -47,6 +49,7 @@ export default class AddItemForm extends React.Component {
     }
     this.setState({ itemNames })
   }
+  
   onItemNameSelect(item) {
     if (item.id === 1) {
       this.setState({ itemNameDialogVisible: true, })
@@ -54,24 +57,34 @@ export default class AddItemForm extends React.Component {
       this.setState({ selectedItemId: item.id, itemName: item.name })
     }
   }
+  
   onDialogDismiss() {
     this.setState({ itemNameDialogVisible: false })
   }
+
   async saveItem() {
     const newItemId = await addOrReplaceItem({
       itemName: this.state.itemName,
       unit: this.state.unit,
       price: this.state.price,
     });
-    await addDayEntry(this.state.date, this.state.month, this.state.year, newItemId, this.state.quantity);
+    
+    if (this.state.applyWholeMonthChecked) {
+      await addDataEntriesForWholeMonth(this.state.month, this.state.year, newItemId, this.state.quantity);
+    } else {
+      await addDayEntry(this.state.date, this.state.month, this.state.year, newItemId, this.state.quantity);
+    }
+    
     this.setState({
       itemName: '',
       price: '',
       quantity: '',
       unit: ''
     });
+    
     this.props.navigation.goBack();
   }
+
   async onSelectItemName(item) {
     const itemDetails = await getItem(item.id);
     if (itemDetails) {
@@ -82,6 +95,7 @@ export default class AddItemForm extends React.Component {
       });
     }
   }
+  
   render() {
     return (
       <View style={styles.formContainer}>
@@ -130,8 +144,8 @@ export default class AddItemForm extends React.Component {
         <CheckBox
           center
           title='Apply this for whole month'
-          checked={this.state.applyItemChecked}
-          onPress={() => this.setState({ applyItemChecked: !this.state.applyItemChecked })}
+          checked={this.state.applyWholeMonthChecked}
+          onPress={() => this.setState({ applyWholeMonthChecked: !this.state.applyWholeMonthChecked })}
         />
         <View style={styles.buttonRow}>
           <Button

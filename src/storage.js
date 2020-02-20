@@ -1,5 +1,6 @@
 import { save, fetch } from './utilities';
 import uuid from 'uuid/v4';
+import { MONTHS } from './constants';
 
 export async function addOrReplaceItem(newItem) {
   try {
@@ -47,17 +48,19 @@ async function addMonthYearData(month, year) {
   let entries = [];
   if (data !== null) {
     entries = JSON.parse(data);
-    const index = entries.findIndex((value) => value.month.toLowerCase() === month.toLowerCase() && value.year === year);
+    const index = entries.findIndex((value) => value.month.toLowerCase() === month.toLowerCase() && value.year === year.toString());
+    
     if (index === -1) {
       entries.push({
         month,
-        year,
+        year: year.toString(),
         days: []
       });
     }
   } else {
-    entries = [{ month, year, days: [] }];
+    entries = [{ month, year: year.toString(), days: [] }];
   }
+  console.log('saving entries in addMonthYearData', JSON.stringify(entries));
   await save('entries', entries);
 }
 
@@ -85,51 +88,121 @@ export async function getDayEntries(month, year) {
   }
 }
 
+// export async function addDayEntry(day, month, year, itemId, quantity) {
+// const monthlyDayEntries = await getDayEntries(month, year);
+// const dayEntries = monthlyDayEntries.filter((value) => value.day === day);
+// const data = await fetch('entries');
+// const entries = JSON.parse(data);
+// const index = entries.findIndex(value => value.month === month && value.year === year);
+// if (dayEntries.length === 0) {
+//   // Add entry to that month and year
+//   entries[index] = Object.assign(entries[index], {
+//     days: [{
+//       day: day.toString(),
+//       items: [{
+//         itemId,
+//         quantity
+//       }]
+//     }]
+//   });
+// } else {
+//   const items = dayEntries[0].items.filter(value => value.itemId === itemId);
+//   if (items.length === 0) {
+//     // No item entry for that day
+//     // Add {itemId, quantity} in items
+//     entries[index].days.map(element => {
+//       if (element.day === day) {
+//         if (element.items.length > 0) {
+//           element.items.push({ itemId, quantity });
+//         } else {
+//           element.items = [{ itemId, quantity }]
+//         }
+//       }
+//       return element;
+//     });
+//   } else {
+//     // Change in quantity for that day for that item
+//     entries[index].days.map(element => {
+//       element.items.map(item => {
+//         if (item.itemId === itemId) {
+//           item.quantity = quantity;
+//         }
+//         return item;
+//       });
+//       return element;
+//     });
+//   }
+// }
+// console.log('Saving entries', JSON.stringify(entries));
+// await save('entries', entries);
+
+
+// }
+
 export async function addDayEntry(day, month, year, itemId, quantity) {
-  const monthlyDayEntries = await getDayEntries(month, year);
-  const dayEntries = monthlyDayEntries.filter((value) => value.day === day);
-  const data = await fetch('entries');
-  const entries = JSON.parse(data);
-  const index = entries.findIndex(value => value.month === month && value.year === year);
-  if (dayEntries.length === 0) {
-    // Add entry to that month and year
-    entries[index] = Object.assign(entries[index], {
-      days: [{
-        day,
-        items: [{
-          itemId,
-          quantity
-        }]
-      }]
-    });
-  } else {
-    const items = dayEntries[0].items.filter(value => value.itemId === itemId);
-    if (items.length === 0) {
-      // No item entry for that day
-      // Add {itemId, quantity} in items
-      entries[index].days.map(element => {
-        if (element.day === day) {
-          if (element.items.length > 0) {
-            element.items.push({ itemId, quantity });
-          } else {
-            element.items = [{ itemId, quantity }]
-          }
-        }
-        return element;
-      });
-    } else {
-      // Change in quantity for that day for that item
-      entries[index].days.map(element => {
-        element.items.map(item => {
-          if (item.itemId === itemId) {
-            item.quantity = quantity;
-          }
-          return item;
+  await addMonthYearData(month, year);
+  const entries = JSON.parse(await fetch('entries'));
+  entries.map(entry => {
+    if (entry.month === month && entry.year === year) {
+      const ind = entry.days.findIndex(element => element.day === day.toString());
+      if (ind === -1) {
+        entry.days.push({
+          day: day.toString(),
+          items: [{
+            itemId,
+            quantity
+          }]
         });
-        return element;
-      });
+      } else {
+        const itemIndex = entry.days[ind].items.findIndex(item => item.itemId === itemId);
+        if (itemIndex === -1) {
+          entry.days[ind].items.push({ itemId, quantity });
+        } else {
+          entry.days[ind].items[itemIndex].quantity = quantity;
+        }
+      }
     }
-  }
+    return entry;
+  });
   console.log('Saving entries', JSON.stringify(entries));
   await save('entries', entries);
 }
+
+export async function addDataEntriesForWholeMonth(month, year, itemId, quantity) {
+  const monthlyDayEntries = await getDayEntries(month, year);
+  let days = new Date(year, MONTHS.indexOf(month) + 1, 0).getDate();
+
+  console.log('year, month', year, month)
+  console.log('Number of days', days)
+  console.log('initial monthlyDayEntries', monthlyDayEntries)
+  for (let i = 1; i <= days; i++) {
+    let ind = monthlyDayEntries.findIndex(element => {
+      if (element) {
+        return element.day === i.toString();
+      }
+      return false;
+    });
+    if (ind > -1) {
+      const itemIndex = monthlyDayEntries[ind].items.findIndex(item => item.itemId === itemId);
+      if (itemIndex === -1) {
+        monthlyDayEntries[ind].items.push({ itemId, quantity });
+      } else {
+        monthlyDayEntries[ind].items[itemIndex].quantity = quantity;
+      }
+    } else {
+      monthlyDayEntries.push({ day: i.toString(), items: [{ itemId, quantity }] })
+    }
+  }
+  console.log('resulting monthlyDayEntries', monthlyDayEntries)
+
+  const data = await fetch('entries');
+  const entries = JSON.parse(data);
+  const index = entries.findIndex(value => value.month === month && value.year === year);
+
+  entries[index].days = monthlyDayEntries;
+  console.log('Saving entries for whole month', JSON.stringify(entries));
+
+  await save('entries', entries);
+
+}
+

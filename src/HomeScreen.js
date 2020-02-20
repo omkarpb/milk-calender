@@ -15,7 +15,7 @@ export default class HomeScreen extends React.Component {
 
     this.state = {
       month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear()
+      year: currentDate.getFullYear().toString()
     };
 
     this.setMonth = this.setMonth.bind(this);
