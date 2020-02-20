@@ -70,7 +70,7 @@ export async function getDayEntries(month, year) {
     if (data !== null) {
       const entries = JSON.parse(data);
       const monthData = entries.filter((value) => {
-        return value.year === year && value.month === month;
+        return value.year === year.toString() && value.month === month;
       });
       // Create data for that month and year
       if (monthData.length === 0) {
@@ -143,7 +143,7 @@ export async function addDayEntry(day, month, year, itemId, quantity) {
   await addMonthYearData(month, year);
   const entries = JSON.parse(await fetch('entries'));
   entries.map(entry => {
-    if (entry.month === month && entry.year === year) {
+    if (entry.month === month && entry.year === year.toString()) {
       const ind = entry.days.findIndex(element => element.day === day.toString());
       if (ind === -1) {
         entry.days.push({
@@ -172,9 +172,6 @@ export async function addDataEntriesForWholeMonth(month, year, itemId, quantity)
   const monthlyDayEntries = await getDayEntries(month, year);
   let days = new Date(year, MONTHS.indexOf(month) + 1, 0).getDate();
 
-  console.log('year, month', year, month)
-  console.log('Number of days', days)
-  console.log('initial monthlyDayEntries', monthlyDayEntries)
   for (let i = 1; i <= days; i++) {
     let ind = monthlyDayEntries.findIndex(element => {
       if (element) {
@@ -193,11 +190,10 @@ export async function addDataEntriesForWholeMonth(month, year, itemId, quantity)
       monthlyDayEntries.push({ day: i.toString(), items: [{ itemId, quantity }] })
     }
   }
-  console.log('resulting monthlyDayEntries', monthlyDayEntries)
 
   const data = await fetch('entries');
   const entries = JSON.parse(data);
-  const index = entries.findIndex(value => value.month === month && value.year === year);
+  const index = entries.findIndex(value => value.month === month && value.year === year.toString());
 
   entries[index].days = monthlyDayEntries;
   console.log('Saving entries for whole month', JSON.stringify(entries));

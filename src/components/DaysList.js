@@ -1,59 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableHighlight } from 'react-native';
 import { MONTHS, STYLES, DAYS } from '../constants';
 import moment from 'moment';
 
-export default function DaysList(props) {
-  let { month, year } = props;
-  let days = new Date(year, month, 0).getDate();
+export default class DaysList extends React.Component {
 
-  let daysList = [];
-  for (let i = 0; i < days; i++) {
-    daysList.push({ date: i + 1, month: MONTHS[month - 1] })
+  constructor(props) {
+    super(props);
+    this.state = {
+      daysList: [],
+    }
+    this.setVisible = this.setVisible.bind(this);
   }
 
-  function setVisible(date, month) {
-    props.navigation.navigate('DayItemDetails', {
+  componentDidMount() {
+    // let { month, year } = this.props;
+    // let days = new Date(year, month, 0).getDate();
+
+    // let daysList = [];
+    // for (let i = 0; i < days; i++) {
+    //   daysList.push({ date: i + 1, month: MONTHS[month - 1] })
+    // }
+    // this.setState({
+    //   daysList
+    // })
+  }
+
+
+
+  setVisible(date, month) {
+    this.props.navigation.navigate('DayItemDetails', {
       date,
       month,
-      year
+      year: this.props.year
     });
   }
 
-  return (
-    <View style={styles.mainContainer}>
-      <FlatList
-        data={daysList}
-        renderItem={({ item }) => {
-          const day = DAYS[moment(`${item.date} ${item.month} ${year}`, 'D MMM YYYY').day()]
-          // const day = DAYS[new Date(`${item.date} ${item.month} ${year}`)];
-          const isWeekend = day === 'Sun' || day === 'Sat';
-          const fontColor = isWeekend ? '#ffc0cb' : STYLES.themeColor;
+  render() {
+    let { month, year } = this.props;
+    let days = new Date(year, month, 0).getDate();
 
-          return (
-            <>
-              <TouchableHighlight onPress={() => setVisible(item.date, item.month)}>
-                <View style={styles.itemContainer}>
-                  <View style={styles.dayDetails}>
-                    <Text style={{ ...styles.upperRow, color: fontColor }}>{item.date} {item.month}</Text>
-                    <Text style={{ ...styles.lowerRow, color: fontColor }}>{day}</Text>
+    let daysList = [];
+    for (let i = 0; i < days; i++) {
+      daysList.push({ date: i + 1, month: MONTHS[month - 1] })
+    }
+    return (
+      <View style={styles.mainContainer}>
+        <FlatList
+          data={daysList}
+          renderItem={({ item }) => {
+            const day = DAYS[moment(`${item.date} ${item.month} ${this.props.year}`, 'D MMM YYYY').day()]
+            // const day = DAYS[new Date(`${item.date} ${item.month} ${year}`)];
+            const isWeekend = day === 'Sun' || day === 'Sat';
+            const fontColor = isWeekend ? '#ffc0cb' : STYLES.themeColor;
+
+            return (
+              <>
+                <TouchableHighlight onPress={() => this.setVisible(item.date, item.month)}>
+                  <View style={styles.itemContainer}>
+                    <View style={styles.dayDetails}>
+                      <Text style={{ ...styles.upperRow, color: fontColor }}>{item.date} {item.month}</Text>
+                      <Text style={{ ...styles.lowerRow, color: fontColor }}>{day}</Text>
+                    </View>
+                    <View style={styles.itemDetails}>
+
+                      <Text style={styles.oneItem}>Milk 1 ltr</Text>
+                      <Text style={styles.oneItem}> Eggs 5 num.</Text>
+                    </View>
+                    <View style={styles.priceDetails}>
+                      <Text style={styles.priceValue}>{'\u20B9'}{50}/-</Text>
+                    </View>
                   </View>
-                  <View style={styles.itemDetails}>
-                    <Text style={styles.oneItem}>Milk 1 ltr</Text>
-                    <Text style={styles.oneItem}> Eggs 5 num.</Text>
-                  </View>
-                  <View style={styles.priceDetails}>
-                    <Text style={styles.priceValue}>{'\u20B9'}{50}/-</Text>
-                  </View>
-                </View>
-              </TouchableHighlight>
-            </>
-          )
-        }}
-        keyExtractor={(item) => item.date.toString()}
-      />
-    </View>
-  )
+                </TouchableHighlight>
+              </>
+            )
+          }}
+          keyExtractor={(item) => item.date.toString()}
+        />
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
