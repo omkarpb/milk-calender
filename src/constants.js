@@ -27,3 +27,9 @@ export const STYLES = {
     themeColor: '#61DAFB',
     backgroundDark: '#333'
 }
+
+export const actions = {
+    addMonth: 'ADD_MONTH',
+    addYear: 'ADD_YEAR',
+    addItems: 'ADD_ITEMS'
+}

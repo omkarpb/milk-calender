@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableHighlight } from 'react-native';
 import { MONTHS, STYLES, DAYS } from '../constants';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
-export default class DaysList extends React.Component {
+class DaysList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -12,20 +13,6 @@ export default class DaysList extends React.Component {
     }
     this.setVisible = this.setVisible.bind(this);
   }
-
-  componentDidMount() {
-    // let { month, year } = this.props;
-    // let days = new Date(year, month, 0).getDate();
-
-    // let daysList = [];
-    // for (let i = 0; i < days; i++) {
-    //   daysList.push({ date: i + 1, month: MONTHS[month - 1] })
-    // }
-    // this.setState({
-    //   daysList
-    // })
-  }
-
 
 
   setVisible(date, month) {
@@ -38,11 +25,11 @@ export default class DaysList extends React.Component {
 
   render() {
     let { month, year } = this.props;
-    let days = new Date(year, month, 0).getDate();
+    let days = new Date(year, MONTHS.indexOf(month), 0).getDate();
 
     let daysList = [];
     for (let i = 0; i < days; i++) {
-      daysList.push({ date: i + 1, month: MONTHS[month - 1] })
+      daysList.push({ date: i + 1, month })
     }
     return (
       <View style={styles.mainContainer}>
@@ -63,9 +50,13 @@ export default class DaysList extends React.Component {
                       <Text style={{ ...styles.lowerRow, color: fontColor }}>{day}</Text>
                     </View>
                     <View style={styles.itemDetails}>
-
-                      <Text style={styles.oneItem}>Milk 1 ltr</Text>
-                      <Text style={styles.oneItem}> Eggs 5 num.</Text>
+                      {(this.props.items && this.props.items.length > 0) && this.props.items.map((item, index) => {
+                        return (
+                          <Text style={styles.oneItem} key={index}>{item.itemId} {item.quantity}</Text>
+                        )
+                      })}
+                      {(!this.props.items || this.props.items.length === 0) && 
+                      <Text style={styles.oneItem}>No items added yet!</Text>}
                     </View>
                     <View style={styles.priceDetails}>
                       <Text style={styles.priceValue}>{'\u20B9'}{50}/-</Text>
@@ -128,3 +119,14 @@ const styles = StyleSheet.create({
     fontSize: 25
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    month: state.currentMonth,
+    year: state.currentYear,
+    items: state.currentItems
+  }
+  
+}
+
+export default connect(mapStateToProps)(DaysList);

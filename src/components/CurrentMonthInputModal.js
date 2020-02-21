@@ -4,29 +4,38 @@ import { MONTHS, STYLES } from '../constants';
 import { getYearsList } from '../utilities';
 
 export default function CurrentMonthInputModal(props) {
+  const [month, setMonth] = useState(props.month);
+  const [year, setYear] = useState(props.year);
+  
   return (
-
     <View style={styles.modal}>
       <View style={styles.monthInput}>
         <Picker
-          selectedValue={props.selectedMonth}
+          selectedValue={month}
           style={styles.picker}
           onValueChange={(itemValue, itemIndex) => {
-            props.setSelectedMonth(itemValue);
+            setMonth(itemValue);
           }}>
-          {MONTHS.map((month, index) => <Picker.Item label={month} value={index + 1} key={index} />)}
+          {MONTHS.map((element, index) => <Picker.Item label={element} value={MONTHS[index]} key={index} />)}
         </Picker>
         <Picker
-          selectedValue={props.selectedYear}
+          selectedValue={year}
           style={styles.picker}
           onValueChange={(itemValue, itemIndex) => {
-            props.setSelectedYear(itemValue);
+            setYear(itemValue);
           }}>
-          {getYearsList().map((year, index) => <Picker.Item label={year.toString()} value={year} key={index} />)}
+          {getYearsList().map((element, index) => <Picker.Item label={element.toString()} value={element.toString()} key={index} />)}
         </Picker>
       </View>
       <View style={styles.controls}>
-        <Button title='Select' onPress={() => props.setVisible(!props.visible)} color={STYLES.themeColor} />
+        <Button
+          title='Select'
+          onPress={() => {
+            props.setMonth(month);
+            props.setYear(year);
+            props.setVisible(!props.visible);
+          }}
+          color={STYLES.themeColor} />
         <Button title='Cancel' onPress={() => props.setVisible(!props.visible)} color={STYLES.themeColor} />
       </View>
     </View>

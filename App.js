@@ -1,16 +1,21 @@
 import React from 'react';
-import HomeScreen from './src/HomeScreen';
+import HomeContainer from './src/containers/HomeContainer';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
-import {STYLES} from './src/constants';
+import { Provider } from 'react-redux';
+import { STYLES } from './src/constants';
 import DayItemDetailsScreen from './src/components/DayItemDetailsScreen';
 import AddItemForm from './src/components/AddItemForm';
+import { ConfigureStore } from './src/store';
 
+const store = ConfigureStore();
 export default function App() {
   return (
     <PaperProvider>
-      <AppContainer />
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
     </PaperProvider>
   );
 }
@@ -18,7 +23,7 @@ export default function App() {
 
 const MainStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: HomeContainer,
     DayItemDetails: DayItemDetailsScreen,
     AddItemForm: AddItemForm
   },
