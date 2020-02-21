@@ -1,20 +1,21 @@
-import { actions } from './constants';
+import { ACTIONS } from './constants';
 
 export function reducer(
   state = {
     currentMonth: '',
     currentYear: '',
-    currentItems: []
+    entries: [],
+    items: []
   },
   action
 ) {
   switch (action.type) {
-    case actions.addMonth:
-      return Object.assign({}, state, { currentMonth: action.payload });
-    case actions.addYear:
-      return Object.assign({}, state, { currentYear: action.payload });
-    case actions.addItems:
-      return Object.assign({}, state, { currentItems: action.payload });
+    case ACTIONS.ADD_MONTH_YEAR:
+      return Object.assign({}, state, { currentMonth: action.payload.month, currentYear: action.payload.year });
+    case ACTIONS.ADD_ENTRIES:
+      return Object.assign({}, state, { entries: action.payload });
+    case ACTIONS.ADD_ITEMS:
+      return Object.assign({}, state, { items: action.payload })
     default:
       return state
   }

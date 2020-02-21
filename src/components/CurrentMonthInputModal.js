@@ -31,8 +31,7 @@ export default function CurrentMonthInputModal(props) {
         <Button
           title='Select'
           onPress={() => {
-            props.setMonth(month);
-            props.setYear(year);
+            props.setMonthYear(month, year);
             props.setVisible(!props.visible);
           }}
           color={STYLES.themeColor} />

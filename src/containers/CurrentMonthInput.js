@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import { MONTHS, STYLES, actions } from '../constants';
 import { Icon, Overlay } from 'react-native-elements'
 import CurrentMonthInputModal from '../components/CurrentMonthInputModal';
-import { addMonth, addYear } from '../actions';
+import { setMonthYear } from '../actions';
 
 class CurrentMonthInput extends React.Component {
 
@@ -30,20 +30,18 @@ class CurrentMonthInput extends React.Component {
     const yearNum = Number(this.props.year);
     
     const nextMonth = monthNum === 12 ? 1 : monthNum + 1;
-    this.props.addMonth(MONTHS[nextMonth - 1]);
-    
     const nextYear = monthNum === 12 ? yearNum + 1 : yearNum;
-    this.props.addYear(nextYear.toString());
+
+    this.props.setMonthYear(MONTHS[nextMonth - 1], nextYear.toString());
   }
   selectPreviousMonth() {
     const monthNum = MONTHS.indexOf(this.props.month) + 1;
     const yearNum = Number(this.props.year);
 
-    const prevMonth = monthNum === 1 ? 12 : monthNum - 1;
-    this.props.addMonth(MONTHS[prevMonth - 1]);
-    
+    const prevMonth = monthNum === 1 ? 12 : monthNum - 1;    
     const prevYear = monthNum === 1 ? yearNum - 1 : yearNum;
-    this.props.addYear(prevYear.toString());
+    
+    this.props.setMonthYear(MONTHS[prevMonth - 1], prevYear.toString());
   }
 
   render() {
@@ -84,8 +82,7 @@ class CurrentMonthInput extends React.Component {
           <CurrentMonthInputModal
             month={this.props.month}
             year={this.props.year}
-            setMonth={this.props.addMonth}
-            setYear={this.props.addYear}
+            setMonthYear={this.props.setMonthYear}
             setVisible={this.setVisible}
           />
         </Overlay>
@@ -129,13 +126,5 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addMonth: (month) => dispatch(addMonth(month)),
-    addYear: (year) => dispatch(addYear(year)),
-  }
-}
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentMonthInput);
-
+export default connect(mapStateToProps)(CurrentMonthInput);

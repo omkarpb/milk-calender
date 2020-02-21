@@ -2,6 +2,7 @@ import { save, fetch } from './utilities';
 import uuid from 'uuid/v4';
 import { MONTHS } from './constants';
 
+
 export async function addOrReplaceItem(newItem) {
   try {
     const data = await fetch('items');
@@ -87,57 +88,6 @@ export async function getDayEntries(month, year) {
     console.error(error);
   }
 }
-
-// export async function addDayEntry(day, month, year, itemId, quantity) {
-// const monthlyDayEntries = await getDayEntries(month, year);
-// const dayEntries = monthlyDayEntries.filter((value) => value.day === day);
-// const data = await fetch('entries');
-// const entries = JSON.parse(data);
-// const index = entries.findIndex(value => value.month === month && value.year === year);
-// if (dayEntries.length === 0) {
-//   // Add entry to that month and year
-//   entries[index] = Object.assign(entries[index], {
-//     days: [{
-//       day: day.toString(),
-//       items: [{
-//         itemId,
-//         quantity
-//       }]
-//     }]
-//   });
-// } else {
-//   const items = dayEntries[0].items.filter(value => value.itemId === itemId);
-//   if (items.length === 0) {
-//     // No item entry for that day
-//     // Add {itemId, quantity} in items
-//     entries[index].days.map(element => {
-//       if (element.day === day) {
-//         if (element.items.length > 0) {
-//           element.items.push({ itemId, quantity });
-//         } else {
-//           element.items = [{ itemId, quantity }]
-//         }
-//       }
-//       return element;
-//     });
-//   } else {
-//     // Change in quantity for that day for that item
-//     entries[index].days.map(element => {
-//       element.items.map(item => {
-//         if (item.itemId === itemId) {
-//           item.quantity = quantity;
-//         }
-//         return item;
-//       });
-//       return element;
-//     });
-//   }
-// }
-// console.log('Saving entries', JSON.stringify(entries));
-// await save('entries', entries);
-
-
-// }
 
 export async function addDayEntry(day, month, year, itemId, quantity) {
   await addMonthYearData(month, year);

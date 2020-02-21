@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { actions, MONTHS } from '../constants';
-import { addItems, addMonth, addYear } from '../actions';
+import { MONTHS } from '../constants';
+import { fetchItems, fetchEntries, setMonthYear } from '../actions';
 import HomeScreen from '../components/HomeScreen';
 
 class HomeContainer extends React.Component {
@@ -12,33 +12,27 @@ class HomeContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setMonth = this.setMonth.bind(this);
-    this.setYear = this.setYear.bind(this);
-    this.addItems = this.addItems.bind(this);
+    this.setMonthYear = this.setMonthYear.bind(this);
+    this.fetchEntries = this.fetchEntries.bind(this);
 
-    // let currentDate = new Date();
-    // props.addMonth(MONTHS[currentDate.getMonth()]);
-    // props.addYear(currentDate.getFullYear().toString());
-    // props.addItems(MONTHS[currentDate.getMonth()], currentDate.getFullYear().toString());
   }
 
   componentDidMount() {
     let currentDate = new Date();
-    this.props.addMonth(MONTHS[currentDate.getMonth()]);
-    this.props.addYear(currentDate.getFullYear().toString());
-    this.props.addItems(MONTHS[currentDate.getMonth()], currentDate.getFullYear().toString());
+    const month = MONTHS[currentDate.getMonth()];
+    const year = currentDate.getFullYear().toString();
+
+    this.props.setMonthYear(month, year);
+    this.props.fetchEntries(MONTHS[currentDate.getMonth()], currentDate.getFullYear().toString());
+    this.props.fetchItems();
   }
 
-  setMonth(month) {
-    this.props.addMonth(month);
+  setMonthYear(month, year) {
+    this.props.setMonthYear(month, year);
   }
 
-  setYear(year) {
-    this.props.addYear(year);
-  }
-
-  addItems(month, year) {
-    this.props.addItems(month, year);
+  fetchEntries(month, year) {
+    this.props.fetchEntries(month, year);
   }
 
   render() {
@@ -47,9 +41,8 @@ class HomeContainer extends React.Component {
         month={this.props.month}
         year={this.props.year}
         items={this.props.items}
-        setMonth={this.setMonth}
-        setYear={this.setYear}
-        addItems={this.addItems}
+        setMonthYear={this.setMonthYear}
+        fetchEntries={this.fetchEntries}
         {...this.props}
       />
     )
@@ -66,9 +59,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addMonth: (month) => dispatch(addMonth(month)),
-    addYear: (year) => dispatch(addYear(year)),
-    addItems: (month, year) => dispatch(addItems(month, year)),
+    setMonthYear: (month, year) => dispatch(setMonthYear(month, year)),
+    fetchEntries: (month, year) => dispatch(fetchEntries(month, year)),
+    fetchItems: () => dispatch(fetchItems())
   }
 }
 
