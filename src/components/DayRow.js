@@ -14,6 +14,7 @@ export default function DayRow(props) {
       if (item) {
         return acc + (Number(item.price) * Number(value.quantity));
       }
+      return acc;
     }, 0);
   }
 
@@ -25,7 +26,7 @@ export default function DayRow(props) {
             return dayItem.items.map(element => {
               const currentItem = items.find(value => value.itemId === element.itemId);
               if (currentItem) {
-                return (<Text style={styles.oneItem} key={index}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Text>)
+                return (<Text style={styles.oneItem} key={element.itemId}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Text>)
               } else {
                 return null;
               }
