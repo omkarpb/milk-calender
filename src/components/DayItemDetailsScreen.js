@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, DatePickerIOS, Picker, FlatList, SafeAreaView, TouchableHighlight, TextInput } from 'react-native';
 import { STYLES } from '../constants';
-import { Icon, Button } from 'react-native-elements';
-import { getItems } from '../storage';
+import { Icon, Button, CheckBox } from 'react-native-elements';
+import DialogCustom from '../elements/DialogCustom';
 
 export default function DayItemDetailsScreen(props) {
 
-  const { date, month, year, items = [] } = props;
+  const { items = [] } = props;
 
   return (
     <View style={styles.mainContainer}>
@@ -29,7 +29,7 @@ export default function DayItemDetailsScreen(props) {
               name='trash'
               type='font-awesome'
               color='#ffc0cb'
-              onPress={() => console.log('hello')} />
+              onPress={() => props.deleteDialogToggle(item)} />
           </View>
         ))}
       </View>
@@ -43,6 +43,21 @@ export default function DayItemDetailsScreen(props) {
         <Button title='Save'></Button>
         <Button title='Cancel' onPress={props.goBack}></Button>
       </View>
+      <DialogCustom
+        visible={props.deleteDialogVisible}
+        onDismiss={props.deleteDialogToggle}
+        onPressAction={props.deleteConfirmAction}
+        actionStyle={props.deleteButtonStyle}
+        actionText='Remove'
+      >
+        <Text>Are you sure?</Text>
+        <CheckBox
+          center
+          title='Remove this from whole month'
+          checked={props.deleteFromWholeMonthChecked}
+          onPress={props.onPressDeleteFromWholeMonthChecked}
+        />
+      </DialogCustom>
     </View>
   )
 }

@@ -171,9 +171,23 @@ export async function addDataEntriesForWholeMonth(month, year, itemId, quantity)
   const index = entries.findIndex(value => value.month === month && value.year === year.toString());
 
   entries[index].days = monthlyDayEntries;
-  console.log('Saving entries for whole month', JSON.stringify(entries));
 
   await save('entries', entries);
 
 }
 
+export async function deleteItem(day, month, year, itemId, deleteForWholeMonth) {
+  const data = await fetch('entries');
+  const entries = JSON.parse(data);
+  const index = entries.findIndex(value => value.month === month && value.year === year.toString());
+
+  entries[index].days = entries[index].days.map(entry => {
+    if (deleteForWholeMonth || entry.day.toString() === day.toString()) {
+      const itemIndex = entry.items.findIndex(item => item.itemId === itemId);
+      entry.items.splice(itemIndex, 1);
+    }
+    return entry;
+  });
+
+  await save('entries', entries);
+}

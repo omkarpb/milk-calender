@@ -5,7 +5,7 @@ import { STYLES } from '../constants';
 import { Icon, Button } from 'react-native-elements';
 import { getItems, getItemsDetailsForDay } from '../storage';
 import DayItemDetailsScreen from '../components/DayItemDetailsScreen';
-import { fetchCurrentItems, fetchItems } from '../actions';
+import { fetchCurrentItems, fetchItems, removeItem } from '../actions';
 
 class DayItemDetailsContainer extends React.Component {
 
@@ -20,8 +20,43 @@ class DayItemDetailsContainer extends React.Component {
       date: props.navigation.getParam('date'),
       month: props.navigation.getParam('month'),
       year: props.navigation.getParam('year'),
+      deleteDialogVisible: false,
+      deleteFromWholeMonthChecked: false,
+      deleteItem: {}
     }
+    this.deleteDialogToggle = this.deleteDialogToggle.bind(this);
+    this.deleteConfirmAction = this.deleteConfirmAction.bind(this);
+    this.onPressDeleteFromWholeMonthChecked = this.onPressDeleteFromWholeMonthChecked.bind(this);
   }
+
+  deleteDialogToggle(item) {
+    if (item) {
+      this.setState({ deleteItem: item });
+    }
+    this.setState(state => {
+      return {
+        deleteDialogVisible: !state.deleteDialogVisible
+      }
+    })
+  }
+
+  deleteConfirmAction() {
+    this.props.removeItem(this.state.date, this.state.month, this.state.year, this.state.deleteItem.itemId, this.state.deleteFromWholeMonthChecked);
+    this.setState(state => {
+      return {
+        deleteDialogVisible: !state.deleteDialogVisible
+      }
+    })
+  }
+
+  onPressDeleteFromWholeMonthChecked() {
+    this.setState(state => {
+      return {
+        deleteFromWholeMonthChecked: !state.deleteFromWholeMonthChecked
+      }
+    })
+  }
+
   componentDidMount() {
     this.props.fetchItems();
     this.props.fetchCurrentItems(this.state.date, this.state.month, this.state.year);
@@ -32,24 +67,23 @@ class DayItemDetailsContainer extends React.Component {
     return (
       <View>
         <DayItemDetailsScreen 
-          date={date}
-          month={month}
-          year={year}
           items={currentItems}
           handleAddItemFormClick={(item) => this.props.navigation.navigate('AddItemForm', {
-            items: items,
-            date: date,
-            month: month,
-            year: year,
-            item
+            items, date, month, year, item
           })}
           goBack={() => this.props.navigation.goBack()}
+          deleteDialogVisible={this.state.deleteDialogVisible}
+          deleteDialogToggle={this.deleteDialogToggle}
+          deleteConfirmAction={this.deleteConfirmAction}
+          deleteFromWholeMonthChecked={this.state.deleteFromWholeMonthChecked}
+          onPressDeleteFromWholeMonthChecked={this.onPressDeleteFromWholeMonthChecked}
         />
       </View>
     )
 
   }
 }
+
 const mapStateToProps = (state) => {
   return {
     currentItems: state.currentItems,
@@ -60,7 +94,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCurrentItems: (day, month, year) => dispatch(fetchCurrentItems(day, month, year)),
-    fetchItems: () => dispatch(fetchItems())
+    fetchItems: () => dispatch(fetchItems()),
+    removeItem: (day, month, year, itemId, deleteForWholeMonth) => dispatch(removeItem(day, month, year, itemId, deleteForWholeMonth)) 
   }
 }
 

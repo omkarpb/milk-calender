@@ -1,5 +1,5 @@
 import { ACTIONS } from './constants';
-import { getDayEntries, getItems, getItemsDetailsForDay, addOrReplaceItem, addDayEntry, addDataEntriesForWholeMonth } from './storage';
+import { getDayEntries, getItems, getItemsDetailsForDay, addOrReplaceItem, addDayEntry, addDataEntriesForWholeMonth, deleteItem } from './storage';
 
 // Action creators
 export const addEntries = (entries) => {
@@ -76,4 +76,12 @@ export const insertItemAndEntry = (itemName, unit, price, quantity, month, year,
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(date, month, year));
   });
+}
+
+export const removeItem = (day, month, year, itemId, deleteForWholeMonth) => dispatch => {
+  return deleteItem(day, month, year, itemId, deleteForWholeMonth)
+  .then(() => {
+    dispatch(fetchEntries(month, year));
+    dispatch(fetchCurrentItems(day, month, year));
+  })
 }
