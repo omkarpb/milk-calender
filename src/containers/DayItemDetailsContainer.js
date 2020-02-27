@@ -61,9 +61,18 @@ class DayItemDetailsContainer extends React.Component {
     this.props.fetchItems();
     this.props.fetchCurrentItems(this.state.date, this.state.month, this.state.year);
   }
+  calculateTotalCost(items) {
+    return items.reduce((acc, curr) => {
+      return acc + Number(curr.price) * Number(curr.quantity);
+    }, 0)
+  }
+
   render() {
     const { date, month, year } = this.state;
     const { currentItems, items } = this.props;
+
+    const cost = this.calculateTotalCost(currentItems);
+
     return (
       <View>
         <DayItemDetailsScreen 
@@ -77,6 +86,7 @@ class DayItemDetailsContainer extends React.Component {
           deleteConfirmAction={this.deleteConfirmAction}
           deleteFromWholeMonthChecked={this.state.deleteFromWholeMonthChecked}
           onPressDeleteFromWholeMonthChecked={this.onPressDeleteFromWholeMonthChecked}
+          totalCost={cost}
         />
       </View>
     )

@@ -6,7 +6,7 @@ import DialogCustom from '../elements/DialogCustom';
 
 export default function DayItemDetailsScreen(props) {
 
-  const { items = [] } = props;
+  const { items = [], totalCost } = props;
 
   return (
     <ScrollView style={styles.mainContainer}>
@@ -38,6 +38,9 @@ export default function DayItemDetailsScreen(props) {
             </View>
           </View>
         ))}
+      </View>
+      <View>
+        <Text style={styles.totalCost}>Total Expenses of the day:  {'\u20B9'} {totalCost}/-</Text>
       </View>
       <View style={styles.buttonRow}>
         <Button
@@ -116,6 +119,10 @@ const styles = StyleSheet.create({
     margin: 10
   },
   buttonRow: {
+    margin: 10
+  },
+  totalCost: {
+    fontSize: 20,
     margin: 10
   }
 });
