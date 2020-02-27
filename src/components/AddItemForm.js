@@ -185,7 +185,8 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'space-evenly',
+    margin: 10
   },
   dropdownItem: {
     padding: 10,

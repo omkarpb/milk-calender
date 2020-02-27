@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, DatePickerIOS, Picker, FlatList, SafeAreaView, TouchableHighlight, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Platform, DatePickerIOS, Picker, FlatList, SafeAreaView, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import { STYLES } from '../constants';
 import { Icon, Button, CheckBox } from 'react-native-elements';
 import DialogCustom from '../elements/DialogCustom';
@@ -9,39 +9,43 @@ export default function DayItemDetailsScreen(props) {
   const { items = [] } = props;
 
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView style={styles.mainContainer}>
       <View style={styles.itemList}>
         {(items.length === 0) && <Text>Loading...</Text>}
         {(items.length !== 0) && items.map((item, index) => (
           <View style={styles.item} key={index}>
-            <Text style={styles.textStyle}>{item.itemName}</Text>
-            <Text style={styles.textStyle}>{item.price}</Text>
-            <Text style={styles.textStyle}>{item.quantity}</Text>
-            <Text style={styles.textStyle}>{item.unit}</Text>
-            <Icon
-              raised
-              name='edit'
-              type='font-awesome'
-              color={STYLES.themeColor}
-              onPress={() => props.handleAddItemFormClick(item)} />
-            <Icon
-              raised
-              name='trash'
-              type='font-awesome'
-              color='#ffc0cb'
-              onPress={() => props.deleteDialogToggle(item)} />
+            <View style={styles.itemRow}>
+              <Text style={styles.textItemName}>{item.itemName}</Text>
+              <Text style={styles.textTotalPrice}>{'\u20B9'} {Number(item.price) * Number(item.quantity)} /- </Text>
+            </View>
+            <View style={styles.itemRow}>
+              <Text style={styles.textStyle}>{item.quantity} {item.unit}</Text>
+              <Text style={styles.textStyle}>{'\u20B9'} {item.price} Per unit/-</Text>
+            </View>
+            <View style={styles.itemRow}>
+              <Icon
+                raised
+                name='edit'
+                type='font-awesome'
+                color={STYLES.themeColor}
+                onPress={() => props.handleAddItemFormClick(item)} />
+              <Icon
+                raised
+                name='trash'
+                type='font-awesome'
+                color='#ffc0cb'
+                onPress={() => props.deleteDialogToggle(item)} />
+            </View>
           </View>
         ))}
       </View>
-      <View>
+      <View style={styles.buttonRow}>
         <Button
           title='Add Item'
-          icon={<Icon name="plus" type="font-awesome" />}
-          iconRight={true}
           onPress={() => props.handleAddItemFormClick()}
+          buttonStyle={styles.buttonStyle}
         />
-        <Button title='Save'></Button>
-        <Button title='Cancel' onPress={props.goBack}></Button>
+        <Button title='Cancel' onPress={props.goBack} buttonStyle={styles.buttonStyle}></Button>
       </View>
       <DialogCustom
         visible={props.deleteDialogVisible}
@@ -58,7 +62,7 @@ export default function DayItemDetailsScreen(props) {
           onPress={props.onPressDeleteFromWholeMonthChecked}
         />
       </DialogCustom>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -89,8 +93,29 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   item: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: STYLES.themeColor,
+    padding: 10,
+
+  },
+  itemRow: {
+    marginBottom: 10,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-evenly'
+  },
+  textItemName: {
+    fontSize: 30
+  },
+  textTotalPrice: {
+    fontSize: 30,
+    color: STYLES.themeColor
+  },
+  buttonStyle: {
+    padding: 10,
+    backgroundColor: STYLES.themeColor,
+    margin: 10
+  },
+  buttonRow: {
+    margin: 10
   }
 });
