@@ -4,7 +4,7 @@ import { Button, CheckBox } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { insertItemAndEntry } from '../actions';
 import { addOrReplaceItem, addDayEntry, getItem, addDataEntriesForWholeMonth } from '../storage';
-import { STYLES } from '../constants';
+import { STYLES, UNITS } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
 class AddItemForm extends React.Component {
@@ -26,18 +26,23 @@ class AddItemForm extends React.Component {
       itemNameDialogVisible: false,
       applyWholeMonthChecked: false, // Apply for whole month
       selectedItemId: '',
-      item: props.navigation.getParam('item')
+      item: props.navigation.getParam('item'),
+      unitsList: [],
+      validity: {
+        itemNameError: false,
+        priceError: false,
+        quantitu: false
+      }
     }
     this.onChangeValue = this.onChangeValue.bind(this);
-    this.onItemNameSelect = this.onItemNameSelect.bind(this);
-    this.onDialogDismiss = this.onDialogDismiss.bind(this);
     this.saveItem = this.saveItem.bind(this);
+    this.onSelectItemName = this.onSelectItemName.bind(this);
   }
-  
+
   onChangeValue(key, text) {
     this.setState({ [key]: text });
   }
-  
+
   componentDidMount() {
     const items = this.state.items;
     let itemNames = items && items.length > 0 && items.map(item => {
@@ -49,7 +54,15 @@ class AddItemForm extends React.Component {
     if (!itemNames) {
       itemNames = [];
     }
-    this.setState({ itemNames });
+
+    const unitsList = UNITS.map((unit, index) => {
+      return {
+        id: index,
+        name: unit
+      }
+    })
+
+    this.setState({ itemNames, unitsList });
     if (this.state.item) {
       const { itemName, price, unit, quantity } = this.state.item;
       this.setState({
@@ -60,32 +73,34 @@ class AddItemForm extends React.Component {
       })
     }
   }
-  
-  onItemNameSelect(item) {
-    if (item.id === 1) {
-      this.setState({ itemNameDialogVisible: true, })
-    } else {
-      this.setState({ selectedItemId: item.id, itemName: item.name })
-    }
-  }
-  
-  onDialogDismiss() {
-    this.setState({ itemNameDialogVisible: false })
-  }
 
   async saveItem() {
     const { itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date } = this.state;
 
-    this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date);
-
     this.setState({
-      itemName: '',
-      price: '',
-      quantity: '',
-      unit: ''
+      validity: {
+        itemNameError: itemName.trim() === "",
+        priceError: price.trim() === "",
+        quantityError: quantity.trim() === ""
+      }
     });
-    
-    this.props.navigation.goBack();
+
+    if (unit.trim() === "") {
+      this.setState({unit: 'unit'});
+    }
+
+    if (itemName.trim() !== "" && price.trim() !== "" && quantity.trim() !== "") {
+      this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date);
+
+      this.setState({
+        itemName: '',
+        price: '',
+        quantity: '',
+        unit: ''
+      });
+
+      this.props.navigation.goBack();
+    }
   }
 
   async onSelectItemName(item) {
@@ -98,14 +113,13 @@ class AddItemForm extends React.Component {
       });
     }
   }
-  
+
   render() {
     return (
       <View style={styles.formContainer}>
-        <Text>Name</Text>
+        <Text>Name*</Text>
         <SearchableDropdown
           items={this.state.itemNames}
-          onItemSelect={this.onItemNameSelect}
           itemStyle={styles.dropdownItem}
           itemsContainerStyle={{ maxHeight: 140 }}
           resetValue={false}
@@ -116,7 +130,9 @@ class AddItemForm extends React.Component {
               placeholder: 'Item name eg. Milk',
               underlineColorAndroid: "transparent",
               style: styles.textControl,
-              value: this.state.itemName
+              value: this.state.itemName,
+              maxLength: 20,
+              autoCapitalize: 'words'
             }
           }
           listProps={
@@ -124,26 +140,47 @@ class AddItemForm extends React.Component {
               nestedScrollEnabled: true,
             }
           } />
-        <Text>Price</Text>
+        {!!this.state.validity.itemNameError && <Text style={styles.errorText}>Please enter item name</Text>}
+        <Text>Price*</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('price', text)}
           value={this.state.price.toString()}
-          placeholder='Price per unit e.g. 45' />
-        <Text>Quantity</Text>
+          placeholder='Price per unit e.g. 45'
+          keyboardType='numeric' />
+        {!!this.state.validity.priceError && <Text style={styles.errorText}>Please enter price</Text>}
+
+        <Text>Quantity*</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('quantity', text)}
           value={this.state.quantity.toString()}
           placeholder='Quantity'
+          keyboardType='numeric'
         />
+        {!!this.state.validity.quantityError && <Text style={styles.errorText}>Please enter quantity</Text>}
+
         <Text>Unit</Text>
-        <TextInput
-          style={styles.textControl}
-          onChangeText={text => this.onChangeValue('unit', text)}
-          value={this.state.unit}
-          placeholder='Unit e.g. Ltr'
-        />
+        <SearchableDropdown
+          items={this.state.unitsList}
+          itemStyle={styles.dropdownItem}
+          itemsContainerStyle={{ maxHeight: 140 }}
+          resetValue={false}
+          onTextChange={(text) => this.onChangeValue('unit', text)}
+          onItemSelect={(item) => this.onChangeValue('unit', item.name)}
+          textInputProps={
+            {
+              placeholder: 'Unit',
+              underlineColorAndroid: "transparent",
+              style: styles.textControl,
+              value: this.state.unit
+            }
+          }
+          listProps={
+            {
+              nestedScrollEnabled: true,
+            }
+          } />
         <CheckBox
           center
           title='Apply this for whole month'
@@ -168,8 +205,7 @@ class AddItemForm extends React.Component {
 
 const styles = StyleSheet.create({
   formContainer: {
-    margin: 20,
-    width: 300
+    margin: 50,
   },
   textControl: {
     height: 40,
@@ -190,11 +226,11 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     padding: 10,
-    marginTop: 2,
-    backgroundColor: '#ddd',
-    borderColor: '#bbb',
-    borderWidth: 1,
-    borderRadius: 5,
+    borderBottomColor: '#bbb',
+    borderBottomWidth: 1,
+  },
+  errorText: {
+    color: 'orange'
   }
 });
 

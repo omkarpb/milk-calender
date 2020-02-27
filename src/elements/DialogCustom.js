@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
-
 export default function DialogCustom(props) {
   return (
     <View>
@@ -15,10 +14,15 @@ export default function DialogCustom(props) {
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={props.onPressAction} style={props.actionStyle}>{props.actionText}</Button>
-            <Button onPress={props.onDismiss}>Cancel</Button>
+            <Button onPress={props.onDismiss} style={styles.cancelButton}>Cancel</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  cancelButton: {
+  }
+})

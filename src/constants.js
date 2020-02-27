@@ -34,3 +34,17 @@ export const ACTIONS = {
     ADD_ITEMS: 'ADD_ITEMS',
     ADD_CURRENT_ITEMS: 'ADD_CURRENT_ITEMS',
 }
+
+export const UNITS = [
+    'units',
+    'l',
+    'ml',
+    'oz',
+    'gal',
+    'pt',
+    't',
+    'kg',
+    'g',
+    'mg',
+    'lb'
+]
