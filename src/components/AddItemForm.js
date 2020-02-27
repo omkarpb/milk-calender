@@ -18,7 +18,6 @@ class AddItemForm extends React.Component {
       price: '',
       quantity: '',
       unit: '',
-      dateRange: 'Apply only for this day',
       items: props.navigation.getParam('items'),
       date: props.navigation.getParam('date'),
       month: props.navigation.getParam('month'),
@@ -26,7 +25,8 @@ class AddItemForm extends React.Component {
       itemNames: [],
       itemNameDialogVisible: false,
       applyWholeMonthChecked: false, // Apply for whole month
-      selectedItemId: ''
+      selectedItemId: '',
+      item: props.navigation.getParam('item')
     }
     this.onChangeValue = this.onChangeValue.bind(this);
     this.onItemNameSelect = this.onItemNameSelect.bind(this);
@@ -49,7 +49,16 @@ class AddItemForm extends React.Component {
     if (!itemNames) {
       itemNames = [];
     }
-    this.setState({ itemNames })
+    this.setState({ itemNames });
+    if (this.state.item) {
+      const { itemName, price, unit, quantity } = this.state.item;
+      this.setState({
+        itemName,
+        price,
+        unit,
+        quantity
+      })
+    }
   }
   
   onItemNameSelect(item) {

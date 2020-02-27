@@ -15,28 +15,20 @@ export default function DayItemDetailsScreen(props) {
         {(items.length !== 0) && items.map((item, index) => (
           <View style={styles.item} key={index}>
             <Text style={styles.textStyle}>{item.itemName}</Text>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={text => setQuantity(Number(text))}
-              value={item.quantity}
-            />
-            <TextInput
-              style={styles.textInput}
-              onChangeText={text => setQuantity(Number(text))}
-              value={item.price}
-            />
+            <Text style={styles.textStyle}>{item.price}</Text>
+            <Text style={styles.textStyle}>{item.quantity}</Text>
             <Text style={styles.textStyle}>{item.unit}</Text>
             <Icon
               raised
-              name='save'
+              name='edit'
               type='font-awesome'
-              color='#00f'
-              onPress={() => console.log('hello')} />
+              color={STYLES.themeColor}
+              onPress={() => props.handleAddItemFormClick(item)} />
             <Icon
               raised
               name='trash'
               type='font-awesome'
-              color='#f00'
+              color='#ffc0cb'
               onPress={() => console.log('hello')} />
           </View>
         ))}
@@ -46,7 +38,7 @@ export default function DayItemDetailsScreen(props) {
           title='Add Item'
           icon={<Icon name="plus" type="font-awesome" />}
           iconRight={true}
-          onPress={() => props.handleAddItemFormClick(items, date, month, year)}
+          onPress={() => props.handleAddItemFormClick()}
         />
         <Button title='Save'></Button>
         <Button title='Cancel' onPress={props.goBack}></Button>

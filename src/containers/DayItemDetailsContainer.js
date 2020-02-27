@@ -36,11 +36,12 @@ class DayItemDetailsContainer extends React.Component {
           month={month}
           year={year}
           items={currentItems}
-          handleAddItemFormClick={() => this.props.navigation.navigate('AddItemForm', {
+          handleAddItemFormClick={(item) => this.props.navigation.navigate('AddItemForm', {
             items: items,
             date: date,
             month: month,
-            year: year
+            year: year,
+            item
           })}
           goBack={() => this.props.navigation.goBack()}
         />
