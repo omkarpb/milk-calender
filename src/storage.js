@@ -44,6 +44,31 @@ export async function getItem(itemId) {
   return item;
 }
 
+export async function getItemsDetailsForDay(day, month, year) {
+  const entries = await getDayEntries(month, year);
+  const allItems = await getItems();
+
+  if (entries.length > 0) {
+    const entry = entries.find(entry => entry.day === day.toString());
+    if (entry !== undefined) {
+      const itemsInfo = [];
+      entry.items.forEach(async (item)=> {
+        const itemDetail = allItems.find(i => i.itemId === item.itemId);
+        
+        itemsInfo.push({
+          ...itemDetail,
+          quantity: item.quantity
+        });
+      });
+      return itemsInfo;
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+}
+
 async function addMonthYearData(month, year) {
   const data = await fetch('entries');
   let entries = [];

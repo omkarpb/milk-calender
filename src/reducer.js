@@ -5,7 +5,8 @@ export function reducer(
     currentMonth: '',
     currentYear: '',
     entries: [],
-    items: []
+    items: [],
+    currentItems: [],
   },
   action
 ) {
@@ -15,9 +16,11 @@ export function reducer(
     case ACTIONS.ADD_ENTRIES:
       return Object.assign({}, state, { entries: action.payload });
     case ACTIONS.ADD_ITEMS:
-      return Object.assign({}, state, { items: action.payload })
+      return Object.assign({}, state, { items: action.payload });
+    case ACTIONS.ADD_CURRENT_ITEMS:
+      return Object.assign({}, state, { currentItems: action.payload });
     default:
-      return state
+      return state;
   }
 
 }

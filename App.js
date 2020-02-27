@@ -8,6 +8,7 @@ import { STYLES } from './src/constants';
 import DayItemDetailsScreen from './src/components/DayItemDetailsScreen';
 import AddItemForm from './src/components/AddItemForm';
 import { ConfigureStore } from './src/store';
+import DayItemDetailsContainer from './src/containers/DayItemDetailsContainer';
 
 const store = ConfigureStore();
 export default function App() {
@@ -24,7 +25,7 @@ export default function App() {
 const MainStack = createStackNavigator(
   {
     Home: HomeContainer,
-    DayItemDetails: DayItemDetailsScreen,
+    DayItemDetails: DayItemDetailsContainer,
     AddItemForm: AddItemForm
   },
   {

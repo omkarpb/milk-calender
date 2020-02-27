@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, Text } from 'react-native';
-import { Button, CheckBox } from 'react-native-elements'
+import { Button, CheckBox } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { insertItemAndEntry } from '../actions';
 import { addOrReplaceItem, addDayEntry, getItem, addDataEntriesForWholeMonth } from '../storage';
 import { STYLES } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
-export default class AddItemForm extends React.Component {
+class AddItemForm extends React.Component {
   static navigationOptions = {
     title: 'Add Item',
   };
@@ -63,18 +65,10 @@ export default class AddItemForm extends React.Component {
   }
 
   async saveItem() {
-    const newItemId = await addOrReplaceItem({
-      itemName: this.state.itemName,
-      unit: this.state.unit,
-      price: this.state.price,
-    });
-    
-    if (this.state.applyWholeMonthChecked) {
-      await addDataEntriesForWholeMonth(this.state.month, this.state.year, newItemId, this.state.quantity);
-    } else {
-      await addDayEntry(this.state.date, this.state.month, this.state.year, newItemId, this.state.quantity);
-    }
-    
+    const { itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date } = this.state;
+
+    this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date);
+
     this.setState({
       itemName: '',
       price: '',
@@ -193,3 +187,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   }
 });
+
+const mapDispatchToProps = dispatch => {
+  return {
+    insertItemAndEntry: (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date) => dispatch(insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date))
+  }
+}
+export default connect(null, mapDispatchToProps)(AddItemForm);
