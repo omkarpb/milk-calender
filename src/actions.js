@@ -99,6 +99,7 @@ export const insertItemAndEntry = (itemName, unit, price, quantity, month, year,
   .then(() => {
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(date, month, year));
+    dispatch(setMonthlySum(month, year));
     dispatch(setLoadingStatus(false));
   });
 }

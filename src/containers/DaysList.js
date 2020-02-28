@@ -36,9 +36,11 @@ class DaysList extends React.Component {
     }
     return (
       <View style={styles.mainContainer}>
-        <View style={styles.monthlyBillBanner}>
-          <Text style={styles.monthlyBillText}>This month's bill:  {CURRENCY}{this.props.monthlySums.totalCost}/-</Text>
-        </View>
+        <TouchableHighlight onPress={() => this.props.navigation.navigate('MonthlyBillDetails', {monthlySums: this.props.monthlySums})}>
+          <View style={styles.monthlyBillBanner}>
+            <Text style={styles.monthlyBillText}>This month's bill:  {CURRENCY}{this.props.monthlySums.totalCost}/-</Text>
+          </View>
+        </TouchableHighlight>
         <FlatList
           data={daysList}
           renderItem={({ item }) => {
@@ -74,7 +76,7 @@ class DaysList extends React.Component {
 const styles = StyleSheet.create({
   mainContainer: {
     marginTop: 80,
-    marginBottom: 70
+    marginBottom: 200
   },
   itemContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -101,15 +103,20 @@ const styles = StyleSheet.create({
     color: STYLES.themeColor,
   },
   monthlyBillBanner: {
-    margin: 10,
-    height: 50,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 10,
     borderBottomColor: STYLES.themeColor,
-    borderBottomWidth: STYLES.hairlineWidth
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderRadius: 3,
+    alignItems: 'center',
+    backgroundColor: STYLES.themeColor,
   },
   monthlyBillText: {
-    fontSize: 30
+    fontSize: 30,
+    color: '#fff'
   }
-
 });
 
 const mapStateToProps = (state) => {
