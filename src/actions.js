@@ -1,5 +1,5 @@
 import { ACTIONS } from './constants';
-import { getDayEntries, getItems, getItemsDetailsForDay, addOrReplaceItem, addDayEntry, addDataEntriesForWholeMonth, deleteItem } from './storage';
+import { getDayEntries, getItems, getItemsDetailsForDay, addOrReplaceItem, addDayEntry, addDataEntriesForWholeMonth, deleteItem, getMonthlyCost } from './storage';
 
 // Action creators
 export const addEntries = (entries) => {
@@ -37,6 +37,13 @@ export const setLoadingStatus = (loading) => {
   }
 }
 
+export const addMonthlySum = (monthlySum) => {
+  return {
+    type: ACTIONS.SET_MONTHLY_SUM,
+    payload: monthlySum
+  }
+}
+
 // Thunks
 export const fetchEntries = (month, year) => dispatch => {
   dispatch(setLoadingStatus(true));
@@ -51,6 +58,7 @@ export const fetchEntries = (month, year) => dispatch => {
 export const setMonthYear = (month, year) => dispatch => {
   dispatch(setLoadingStatus(true));
   dispatch(addMonthYear(month, year));
+  dispatch(setMonthlySum(month, year))
   return getDayEntries(month, year)
   .then(res => {
     dispatch(addEntries(res));
@@ -102,5 +110,12 @@ export const removeItem = (day, month, year, itemId, deleteForWholeMonth) => dis
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(day, month, year));
     dispatch(setLoadingStatus(false));
+  })
+}
+
+export const setMonthlySum = (month, year) => dispatch => {
+  return getMonthlyCost(month, year)
+  .then(res => {
+    dispatch(addMonthlySum(res));
   })
 }

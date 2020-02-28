@@ -33,7 +33,8 @@ export const ACTIONS = {
     ADD_MONTH_YEAR: 'ADD_MONTH_YEAR',
     ADD_ITEMS: 'ADD_ITEMS',
     ADD_CURRENT_ITEMS: 'ADD_CURRENT_ITEMS',
-    SET_LOADING_STATUS: 'SET_LOADING_STATUS'
+    SET_LOADING_STATUS: 'SET_LOADING_STATUS',
+    SET_MONTHLY_SUM: 'SET_MONTHLY_SUM'
 }
 
 export const UNITS = [
@@ -49,3 +50,5 @@ export const UNITS = [
     'mg',
     'lb'
 ]
+
+export const CURRENCY = '\u20B9';

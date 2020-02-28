@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableHighlight } from 'react-native';
-import { MONTHS, STYLES, DAYS } from '../constants';
+import { MONTHS, STYLES, DAYS, CURRENCY } from '../constants';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import DayRow from '../components/DayRow';
+import { getMonthlyCost } from '../storage';
+import { setMonthlySum } from '../actions';
 
 class DaysList extends React.Component {
 
@@ -11,6 +13,7 @@ class DaysList extends React.Component {
     super(props);
     this.state = {
       daysList: [],
+      totalCost: 0
     }
     this.setVisible = this.setVisible.bind(this);
   }
@@ -33,6 +36,9 @@ class DaysList extends React.Component {
     }
     return (
       <View style={styles.mainContainer}>
+        <View style={styles.monthlyBillBanner}>
+          <Text style={styles.monthlyBillText}>This month's bill:  {CURRENCY}{this.props.monthlySums.totalCost}/-</Text>
+        </View>
         <FlatList
           data={daysList}
           renderItem={({ item }) => {
@@ -68,7 +74,7 @@ class DaysList extends React.Component {
 const styles = StyleSheet.create({
   mainContainer: {
     marginTop: 80,
-    marginBottom: 50
+    marginBottom: 70
   },
   itemContainer: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -94,7 +100,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: STYLES.themeColor,
   },
-
+  monthlyBillBanner: {
+    margin: 10,
+    height: 50,
+    borderBottomColor: STYLES.themeColor,
+    borderBottomWidth: STYLES.hairlineWidth
+  },
+  monthlyBillText: {
+    fontSize: 30
+  }
 
 });
 
@@ -103,9 +117,15 @@ const mapStateToProps = (state) => {
     month: state.currentMonth,
     year: state.currentYear,
     entries: state.entries,
-    items: state.items
+    items: state.items,
+    monthlySums: state.monthlySums
   }
-
 }
 
-export default connect(mapStateToProps)(DaysList);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setMonthlySum: (month, year) => dispatch(setMonthlySum(month, year))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DaysList);

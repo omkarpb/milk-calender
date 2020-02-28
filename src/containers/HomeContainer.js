@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { MONTHS } from '../constants';
 import { fetchItems, fetchEntries, setMonthYear, setLoadingStatus } from '../actions';
 import HomeScreen from '../components/HomeScreen';
-import LoaderOverlay from '../elements/LoaderOverlay';
+
 class HomeContainer extends React.Component {
   static navigationOptions = {
     title: 'Milk Calendar',

@@ -7,7 +7,8 @@ export function reducer(
     entries: [],
     items: [],
     currentItems: [],
-    loading: false
+    loading: false,
+    monthlySums: {}
   },
   action
 ) {
@@ -22,6 +23,8 @@ export function reducer(
       return Object.assign({}, state, { currentItems: action.payload });
     case ACTIONS.SET_LOADING_STATUS:
       return Object.assign({}, state, { loading: action.payload });
+    case ACTIONS.SET_MONTHLY_SUM:
+      return Object.assign({}, state, { monthlySums: action.payload });
     default:
       return state;
   }

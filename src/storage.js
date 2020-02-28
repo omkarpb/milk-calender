@@ -188,3 +188,31 @@ export async function deleteItem(day, month, year, itemId, deleteForWholeMonth) 
 
   await save('entries', entries);
 }
+
+export async function getMonthlyCost(month, year) {
+  const allItems = await getItems();
+  const entries = await getDayEntries(month, year);
+  const result = {
+    totalCost: 0,
+    itemsCost: []
+  }
+  const totalCost = allItems.reduce((total, item) => {
+    if (entries.length > 0) {
+      const itemCost = entries.reduce((acc, curr) => {
+        let cost = 0;
+        const itemFound = curr.items.find(element => element.itemId === item.itemId);
+        if (itemFound !== undefined) {
+          cost = Number(itemFound.quantity) * Number(item.price);
+        }
+        return acc + cost;
+      }, 0);
+      result.itemsCost.push({
+        ...item,
+        itemCost: itemCost ? itemCost : 0
+      });
+      return total + itemCost;
+    }
+  }, 0);
+  result.totalCost = totalCost ? totalCost : 0;
+  return result;
+}
