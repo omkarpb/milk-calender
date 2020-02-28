@@ -7,7 +7,7 @@ import { MONTHS } from '../constants';
 export default function HomeScreen(props) {
   return (
     <SafeAreaView>
-      <CurrentMonthInput month={MONTHS.indexOf(props.month)} year={Number(props.year)}  {...props} />
+      <CurrentMonthInput {...props} />
       <DaysList {...props} />
     </SafeAreaView>
   );

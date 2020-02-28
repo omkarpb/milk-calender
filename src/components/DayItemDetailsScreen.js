@@ -3,76 +3,85 @@ import { View, Text, StyleSheet, Platform, DatePickerIOS, Picker, FlatList, Safe
 import { STYLES } from '../constants';
 import { Icon, Button, CheckBox } from 'react-native-elements';
 import DialogCustom from '../elements/DialogCustom';
+import LoaderOverlay from '../elements/LoaderOverlay';
 
 export default function DayItemDetailsScreen(props) {
 
   const { items = [], totalCost } = props;
 
   return (
-    <ScrollView style={styles.mainContainer}>
-      <View style={styles.itemList}>
-        {(items.length === 0) && <Text>Loading...</Text>}
-        {(items.length !== 0) && items.map((item, index) => (
-          <View style={styles.item} key={index}>
-            <View style={styles.itemRow}>
-              <Text style={styles.textItemName}>{item.itemName}</Text>
-              <Text style={styles.textTotalPrice}>{'\u20B9'} {Number(item.price) * Number(item.quantity)} /- </Text>
+    <View style={styles.main}>
+      <ScrollView style={styles.mainContainer}>
+        <View style={styles.itemList}>
+          {(items.length === 0) && <Text style={styles.textNote}>No Items added yet ! Click Add Item to get started</Text>}
+          {props.loading && <LoaderOverlay />}
+
+          {(!props.loading && items.length !== 0) && items.map((item, index) => (
+            <View style={styles.item} key={index}>
+              <View style={styles.itemRow}>
+                <Text style={styles.textItemName}>{item.itemName}</Text>
+                <Text style={styles.textTotalPrice}>{'\u20B9'} {Number(item.price) * Number(item.quantity)} /- </Text>
+              </View>
+              <View style={styles.itemRow}>
+                <Text style={styles.textStyle}>{item.quantity} {item.unit}</Text>
+                <Text style={styles.textStyle}>{'\u20B9'} {item.price} Per unit/-</Text>
+              </View>
+              <View style={styles.itemRow}>
+                <Icon
+                  raised
+                  name='edit'
+                  type='font-awesome'
+                  color={STYLES.themeColor}
+                  onPress={() => props.handleAddItemFormClick(item)} />
+                <Icon
+                  raised
+                  name='trash'
+                  type='font-awesome'
+                  color='#ffc0cb'
+                  onPress={() => props.deleteDialogToggle(item)} />
+              </View>
             </View>
-            <View style={styles.itemRow}>
-              <Text style={styles.textStyle}>{item.quantity} {item.unit}</Text>
-              <Text style={styles.textStyle}>{'\u20B9'} {item.price} Per unit/-</Text>
-            </View>
-            <View style={styles.itemRow}>
-              <Icon
-                raised
-                name='edit'
-                type='font-awesome'
-                color={STYLES.themeColor}
-                onPress={() => props.handleAddItemFormClick(item)} />
-              <Icon
-                raised
-                name='trash'
-                type='font-awesome'
-                color='#ffc0cb'
-                onPress={() => props.deleteDialogToggle(item)} />
-            </View>
-          </View>
-        ))}
-      </View>
-      <View>
-        <Text style={styles.totalCost}>Total Expenses of the day:  {'\u20B9'} {totalCost}/-</Text>
-      </View>
-      <View style={styles.buttonRow}>
-        <Button
-          title='Add Item'
-          onPress={() => props.handleAddItemFormClick()}
-          buttonStyle={styles.buttonStyle}
-        />
-        <Button title='Cancel' onPress={props.goBack} buttonStyle={styles.buttonStyle}></Button>
-      </View>
-      <DialogCustom
-        visible={props.deleteDialogVisible}
-        onDismiss={props.deleteDialogToggle}
-        onPressAction={props.deleteConfirmAction}
-        actionStyle={props.deleteButtonStyle}
-        actionText='Remove'
-      >
-        <Text>Are you sure?</Text>
-        <CheckBox
-          center
-          title='Remove this from whole month'
-          checked={props.deleteFromWholeMonthChecked}
-          onPress={props.onPressDeleteFromWholeMonthChecked}
-        />
-      </DialogCustom>
-    </ScrollView>
+          ))}
+        </View>
+        <View>
+          <Text style={styles.totalCost}>Total Expenses of the day:  {'\u20B9'} {totalCost}/-</Text>
+        </View>
+        <View style={styles.buttonRow}>
+          <Button
+            title='Add Item'
+            onPress={() => props.handleAddItemFormClick()}
+            buttonStyle={styles.buttonStyle}
+          />
+          <Button title='Cancel' onPress={props.goBack} buttonStyle={styles.buttonStyle}></Button>
+        </View>
+        <DialogCustom
+          visible={props.deleteDialogVisible}
+          onDismiss={props.deleteDialogToggle}
+          onPressAction={props.deleteConfirmAction}
+          actionStyle={props.deleteButtonStyle}
+          actionText='Remove'
+        >
+          <Text>Are you sure?</Text>
+          <CheckBox
+            center
+            title='Remove this from whole month'
+            checked={props.deleteFromWholeMonthChecked}
+            onPress={props.onPressDeleteFromWholeMonthChecked}
+          />
+        </DialogCustom>
+      </ScrollView>
+     
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  main: {
+    // flex: 1
+  },
   mainContainer: {
     margin: 10,
-    marginTop: 30
+    marginTop: 30,
   },
   headerContainer: {},
   header: {
@@ -122,7 +131,14 @@ const styles = StyleSheet.create({
     margin: 10
   },
   totalCost: {
-    fontSize: 20,
+    fontSize: 30,
     margin: 10
+  },
+  textNote: {
+    fontSize: 20
+  },
+  footer: {
+    // flex: 1,
+    // justifyContent: 'flex-end'
   }
 });

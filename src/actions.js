@@ -30,39 +30,55 @@ export const addCurrentItems = (items) => {
   }
 }
 
+export const setLoadingStatus = (loading) => {
+  return {
+    type: ACTIONS.SET_LOADING_STATUS,
+    payload: loading
+  }
+}
+
 // Thunks
 export const fetchEntries = (month, year) => dispatch => {
+  dispatch(setLoadingStatus(true));
   return getDayEntries(month, year)
   .then(res => {
     dispatch(addEntries(res));
+    dispatch(setLoadingStatus(false));
   });
 }
 
 
 export const setMonthYear = (month, year) => dispatch => {
+  dispatch(setLoadingStatus(true));
   dispatch(addMonthYear(month, year));
   return getDayEntries(month, year)
   .then(res => {
     dispatch(addEntries(res));
+    dispatch(setLoadingStatus(false));
   });
 }
 
 export const fetchItems = () => dispatch => {
+  dispatch(setLoadingStatus(true));
   return getItems()
   .then(res => {
     dispatch(addItems(res));
+    dispatch(setLoadingStatus(false));
   })
 }
 
 
 export const fetchCurrentItems = (day, month, year) => (dispatch) => {
+  dispatch(setLoadingStatus(true));
   return getItemsDetailsForDay(day, month, year)
   .then(itemDetails => {
     dispatch(addCurrentItems(itemDetails));
+    dispatch(setLoadingStatus(false));
   })
 }
 
 export const insertItemAndEntry = (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date) => dispatch => {
+  dispatch(setLoadingStatus(true));
   return addOrReplaceItem({itemName, unit, price})
   .then(itemId => {
     dispatch(fetchItems());
@@ -75,13 +91,16 @@ export const insertItemAndEntry = (itemName, unit, price, quantity, month, year,
   .then(() => {
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(date, month, year));
+    dispatch(setLoadingStatus(false));
   });
 }
 
 export const removeItem = (day, month, year, itemId, deleteForWholeMonth) => dispatch => {
+  dispatch(setLoadingStatus(true));
   return deleteItem(day, month, year, itemId, deleteForWholeMonth)
   .then(() => {
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(day, month, year));
+    dispatch(setLoadingStatus(false));
   })
 }

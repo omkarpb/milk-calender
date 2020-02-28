@@ -4,9 +4,10 @@ import {connect} from 'react-redux';
 import { MONTHS, STYLES, actions } from '../constants';
 import { Icon, Overlay } from 'react-native-elements'
 import CurrentMonthInputModal from '../components/CurrentMonthInputModal';
-import { setMonthYear } from '../actions';
+import { setLoadingStatus } from '../actions';
+import LoaderOverlay from '../elements/LoaderOverlay';
 
-class CurrentMonthInput extends React.Component {
+export default class CurrentMonthInput extends React.Component {
 
   constructor(props) {
     super(props);
@@ -14,8 +15,6 @@ class CurrentMonthInput extends React.Component {
       modalVisible: false
     }
     this.setVisible = this.setVisible.bind(this);
-    this.selectNextMonth = this.selectNextMonth.bind(this);
-    this.selectPreviousMonth = this.selectPreviousMonth.bind(this);
   }
 
   setVisible() {
@@ -25,28 +24,16 @@ class CurrentMonthInput extends React.Component {
       }
     });
   }
-  selectNextMonth() {
-    const monthNum = MONTHS.indexOf(this.props.month) + 1;
-    const yearNum = Number(this.props.year);
-    
-    const nextMonth = monthNum === 12 ? 1 : monthNum + 1;
-    const nextYear = monthNum === 12 ? yearNum + 1 : yearNum;
-
-    this.props.setMonthYear(MONTHS[nextMonth - 1], nextYear.toString());
-  }
-  selectPreviousMonth() {
-    const monthNum = MONTHS.indexOf(this.props.month) + 1;
-    const yearNum = Number(this.props.year);
-
-    const prevMonth = monthNum === 1 ? 12 : monthNum - 1;    
-    const prevYear = monthNum === 1 ? yearNum - 1 : yearNum;
-    
-    this.props.setMonthYear(MONTHS[prevMonth - 1], prevYear.toString());
-  }
 
   render() {
     const isIOS = Platform.OS === 'ios';
 
+    // if (this.props.loading) {
+    //   console.log('Inside loading');
+    //   return (
+    //     <LoaderOverlay />
+    //   )
+    // } 
     return (
       <View style={styles.monthInputContainer}>
         <View style={styles.iconContainerLeft}>
@@ -56,11 +43,14 @@ class CurrentMonthInput extends React.Component {
             color={STYLES.themeColor}
             iconStyle={styles.icon}
             containerStyle={styles.iconContainer}
-            onPress={this.selectPreviousMonth}
+            onPress={this.props.selectPreviousMonth}
           />
         </View>
         <TouchableHighlight onPress={this.setVisible} style={styles.touchableArea}>
-          <Text style={styles.monthInputText}>{this.props.month} {this.props.year}</Text>
+          <View>
+            {this.props.loading && <LoaderOverlay /> }
+            {!this.props.loading && <Text style={styles.monthInputText}>{this.props.month} {this.props.year}</Text>}
+          </View>
         </TouchableHighlight>
         <View style={styles.iconContainerRight}>
           <Icon
@@ -69,7 +59,7 @@ class CurrentMonthInput extends React.Component {
             color={STYLES.themeColor}
             iconStyle={styles.icon}
             containerStyle={styles.iconContainer}
-            onPress={this.selectNextMonth}
+            onPress={this.props.selectNextMonth}
           />
         </View>
         <Overlay
@@ -82,7 +72,7 @@ class CurrentMonthInput extends React.Component {
           <CurrentMonthInputModal
             month={this.props.month}
             year={this.props.year}
-            setMonthYear={this.props.setMonthYear}
+            handleSelect={this.props.handleMonthYearSelect}
             setVisible={this.setVisible}
           />
         </Overlay>
@@ -91,12 +81,6 @@ class CurrentMonthInput extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    month: state.currentMonth,
-    year: state.currentYear,
-  }
-}
 
 const styles = StyleSheet.create({
   monthInputContainer: {
@@ -109,7 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: STYLES.backgroundDark,
     flex: 1,
     borderRadius: 3
-
   },
   monthInputText: {
     fontSize: 20,
@@ -124,7 +107,3 @@ const styles = StyleSheet.create({
     margin: 10
   },
 });
-
-
-
-export default connect(mapStateToProps)(CurrentMonthInput);

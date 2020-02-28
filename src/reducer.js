@@ -7,6 +7,7 @@ export function reducer(
     entries: [],
     items: [],
     currentItems: [],
+    loading: false
   },
   action
 ) {
@@ -19,6 +20,8 @@ export function reducer(
       return Object.assign({}, state, { items: action.payload });
     case ACTIONS.ADD_CURRENT_ITEMS:
       return Object.assign({}, state, { currentItems: action.payload });
+    case ACTIONS.SET_LOADING_STATUS:
+      return Object.assign({}, state, { loading: action.payload });
     default:
       return state;
   }

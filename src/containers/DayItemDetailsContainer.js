@@ -87,6 +87,7 @@ class DayItemDetailsContainer extends React.Component {
           deleteFromWholeMonthChecked={this.state.deleteFromWholeMonthChecked}
           onPressDeleteFromWholeMonthChecked={this.onPressDeleteFromWholeMonthChecked}
           totalCost={cost}
+          loading={this.props.loading}
         />
       </View>
     )
@@ -97,7 +98,8 @@ class DayItemDetailsContainer extends React.Component {
 const mapStateToProps = (state) => {
   return {
     currentItems: state.currentItems,
-    items: state.items
+    items: state.items,
+    loading: state.loading
   }
 }
 
@@ -105,7 +107,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchCurrentItems: (day, month, year) => dispatch(fetchCurrentItems(day, month, year)),
     fetchItems: () => dispatch(fetchItems()),
-    removeItem: (day, month, year, itemId, deleteForWholeMonth) => dispatch(removeItem(day, month, year, itemId, deleteForWholeMonth)) 
+    removeItem: (day, month, year, itemId, deleteForWholeMonth) => dispatch(removeItem(day, month, year, itemId, deleteForWholeMonth)) ,
   }
 }
 

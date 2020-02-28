@@ -20,7 +20,6 @@ export async function addOrReplaceItem(newItem) {
     } else {
       items = [{ ...newItem, itemId: id }];
     }
-    console.log('Adding item', JSON.stringify(items));
     await save('items', items);
     return id;
   } catch (error) {
@@ -86,7 +85,6 @@ async function addMonthYearData(month, year) {
   } else {
     entries = [{ month, year: year.toString(), days: [] }];
   }
-  console.log('saving entries in addMonthYearData', JSON.stringify(entries));
   await save('entries', entries);
 }
 
@@ -139,7 +137,6 @@ export async function addDayEntry(day, month, year, itemId, quantity) {
     }
     return entry;
   });
-  console.log('Saving entries', JSON.stringify(entries));
   await save('entries', entries);
 }
 
