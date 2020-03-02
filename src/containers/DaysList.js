@@ -36,7 +36,7 @@ class DaysList extends React.Component {
     }
     return (
       <View style={styles.mainContainer}>
-        <TouchableHighlight onPress={() => this.props.navigation.navigate('MonthlyBillDetails', {monthlySums: this.props.monthlySums})}>
+        <TouchableHighlight onPress={() => this.props.navigation.navigate('MonthBill', {monthlySums: this.props.monthlySums, month, year })}>
           <View style={styles.monthlyBillBanner}>
             <Text style={styles.monthlyBillText}>This month's bill:  {CURRENCY}{this.props.monthlySums.totalCost}/-</Text>
           </View>
@@ -129,10 +129,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setMonthlySum: (month, year) => dispatch(setMonthlySum(month, year))
-  }
-}
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setMonthlySum: (month, year) => dispatch(setMonthlySum(month, year))
+//   }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DaysList);
+export default connect(mapStateToProps)(DaysList);

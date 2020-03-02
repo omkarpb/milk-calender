@@ -196,23 +196,26 @@ export async function getMonthlyCost(month, year) {
     totalCost: 0,
     itemsCost: []
   }
-  const totalCost = allItems.reduce((total, item) => {
+  const totalCost = allItems !== null ? allItems.reduce((total, item) => {
     if (entries.length > 0) {
-      const itemCost = entries.reduce((acc, curr) => {
-        let cost = 0;
-        const itemFound = curr.items.find(element => element.itemId === item.itemId);
+      let totalItemCost = 0;
+      let totalItemQuantity = 0;
+      entries.forEach((entry) => {
+        const itemFound = entry.items.find(element => element.itemId === item.itemId);
         if (itemFound !== undefined) {
-          cost = Number(itemFound.quantity) * Number(item.price);
+          const cost = Number(itemFound.quantity) * Number(item.price);
+          totalItemCost = totalItemCost + cost;
+          totalItemQuantity = totalItemQuantity + Number(itemFound.quantity);
         }
-        return acc + cost;
-      }, 0);
+      });
       result.itemsCost.push({
         ...item,
-        itemCost: itemCost ? itemCost : 0
+        itemCost: totalItemCost,
+        itemQuantity: totalItemQuantity
       });
-      return total + itemCost;
+      return total + totalItemCost;
     }
-  }, 0);
+  }, 0) : 0;
   result.totalCost = totalCost ? totalCost : 0;
   return result;
 }

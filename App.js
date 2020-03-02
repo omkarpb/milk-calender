@@ -9,6 +9,7 @@ import DayItemDetailsScreen from './src/components/DayItemDetailsScreen';
 import AddItemForm from './src/components/AddItemForm';
 import { ConfigureStore } from './src/store';
 import DayItemDetailsContainer from './src/containers/DayItemDetailsContainer';
+import MonthBillPage from './src/components/MonthlBillPage';
 
 const store = ConfigureStore();
 export default function App() {
@@ -26,7 +27,8 @@ const MainStack = createStackNavigator(
   {
     Home: HomeContainer,
     DayItemDetails: DayItemDetailsContainer,
-    AddItemForm: AddItemForm
+    AddItemForm: AddItemForm,
+    MonthBill: MonthBillPage
   },
   {
     initialRouteName: 'Home',
