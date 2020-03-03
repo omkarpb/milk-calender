@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet} from 'react-native';
+import {CURRENCY} from '../constants';
 
 export default function DayRow(props) {
   const {entries, day, items} = props;
@@ -17,28 +18,18 @@ export default function DayRow(props) {
       return acc;
     }, 0);
   }
-
   return (
     <>
       <View style={styles.itemDetails}>
-        {(entries && entries.length > 0) && entries.map((dayItem, index) => {
-          if (dayItem.day === day.toString()) {
-            return dayItem.items.map(element => {
-              const currentItem = items.find(value => value.itemId === element.itemId);
-              if (currentItem) {
-                return (<Text style={styles.oneItem} key={element.itemId}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Text>)
-              } else {
-                return null;
-              }
-            });
-          }
-        })}
-        {(!entries || entries.length === 0) &&
-          <Text style={styles.oneItem}>No items added yet!</Text>
+        {(!!entry && entry.items.length > 0) && entry.items.map(element => {
+            const currentItem = items.find(value => value.itemId === element.itemId) || {};
+            return (<Text style={styles.oneItem} key={element.itemId}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Text>)
+          })
         }
+        {(!entry || (!!entry && entry.items.length === 0)) && <Text style={styles.oneItem}>No items added yet!</Text>}
       </View>
       <View style={styles.priceDetails}>
-        <Text style={styles.priceValue}>{'\u20B9'}{totalCost}/-</Text>
+        <Text style={styles.priceValue}>{CURRENCY}{totalCost}/-</Text>
       </View>
     </>
   )
