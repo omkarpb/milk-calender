@@ -113,6 +113,7 @@ class AddItemForm extends React.Component {
         itemName: itemDetails.itemName,
         price: itemDetails.price,
         unit: itemDetails.unit,
+        itemId: itemDetails.itemId
       });
     }
   }
