@@ -28,8 +28,8 @@ class HomeContainer extends React.Component {
     const year = currentDate.getFullYear().toString();
 
     this.props.setMonthYear(month, year);
-    this.props.fetchEntries(MONTHS[currentDate.getMonth()], currentDate.getFullYear().toString());
     this.props.fetchItems();
+    this.props.fetchEntries(MONTHS[currentDate.getMonth()], currentDate.getFullYear().toString());
   }
 
   fetchEntries(month, year) {

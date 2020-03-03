@@ -59,7 +59,6 @@ export async function getItemsDetailsForDay(day, month, year) {
           quantity: item.quantity
         });
       });
-      console.log('getItemsDetailsForDay', itemsInfo)
       return itemsInfo;
     } else {
       return [];

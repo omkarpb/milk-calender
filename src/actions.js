@@ -71,7 +71,7 @@ export const fetchItems = () => dispatch => {
   return getItems()
   .then(res => {
     dispatch(addItems(res));
-    dispatch(setLoadingStatus(false));
+    // dispatch(setLoadingStatus(false));
   })
 }
 

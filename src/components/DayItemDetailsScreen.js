@@ -1,30 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, DatePickerIOS, Picker, FlatList, SafeAreaView, TouchableHighlight, TextInput, ScrollView } from 'react-native';
-import { STYLES } from '../constants';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { STYLES, CURRENCY } from '../constants';
 import { Icon, Button, CheckBox } from 'react-native-elements';
 import DialogCustom from '../elements/DialogCustom';
 import LoaderOverlay from '../elements/LoaderOverlay';
 
 export default function DayItemDetailsScreen(props) {
 
-  const { items = [], totalCost } = props;
-
+  const { items, totalCost } = props;
   return (
     <View style={styles.main}>
       <ScrollView style={styles.mainContainer}>
-        <View style={styles.itemList}>
-          {(items.length === 0) && <Text style={styles.textNote}>No Items added yet ! Click Add Item to get started</Text>}
+        <View>
           {props.loading && <LoaderOverlay />}
+          {(!props.loading && items.length === 0) &&
+            <View style={styles.noItemsTextContainer}>
+              <Text style={styles.textNote}>No Items added yet !</Text>
+            </View>
+          }
 
           {(!props.loading && items.length !== 0) && items.map((item, index) => (
             <View style={styles.item} key={index}>
               <View style={styles.itemRow}>
                 <Text style={styles.textItemName}>{item.itemName}</Text>
-                <Text style={styles.textTotalPrice}>{'\u20B9'} {Number(item.price) * Number(item.quantity)} /- </Text>
+                <Text style={styles.textTotalPrice}>{CURRENCY} {Number(item.price) * Number(item.quantity)} /- </Text>
               </View>
               <View style={styles.itemRow}>
                 <Text style={styles.textStyle}>{item.quantity} {item.unit}</Text>
-                <Text style={styles.textStyle}>{'\u20B9'} {item.price} Per unit/-</Text>
+                <Text style={styles.textStyle}>{CURRENCY} {item.price} Per unit/-</Text>
               </View>
               <View style={styles.itemRow}>
                 <Icon
@@ -43,16 +46,17 @@ export default function DayItemDetailsScreen(props) {
             </View>
           ))}
         </View>
-        <View>
-          <Text style={styles.totalCost}>Total Expenses of the day:  {'\u20B9'} {totalCost}/-</Text>
-        </View>
-        <View style={styles.buttonRow}>
-          <Button
-            title='Add Item'
-            onPress={() => props.handleAddItemFormClick('add')}
-            buttonStyle={styles.buttonStyle}
-          />
-          <Button title='Cancel' onPress={props.goBack} buttonStyle={styles.buttonStyle}></Button>
+        <View style={styles.footer}>
+          <View>
+            <Text style={styles.totalCost}>Total Expenses of the day:  {CURRENCY} {totalCost}/-</Text>
+          </View>
+          <View style={styles.buttonRow}>
+            <Button
+              title='Add Item'
+              onPress={() => props.handleAddItemFormClick('add')}
+              buttonStyle={styles.buttonStyle}
+            />
+          </View>
         </View>
         <DialogCustom
           visible={props.deleteDialogVisible}
@@ -70,7 +74,7 @@ export default function DayItemDetailsScreen(props) {
           />
         </DialogCustom>
       </ScrollView>
-     
+
     </View>
   )
 }
@@ -134,11 +138,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     margin: 10
   },
+  noItemsTextContainer: {
+    alignItems: 'center',
+    height: 200
+  },
   textNote: {
-    fontSize: 20
+    fontSize: 20,
   },
   footer: {
-    // flex: 1,
-    // justifyContent: 'flex-end'
+    bottom: 0
   }
 });
