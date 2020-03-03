@@ -43,15 +43,16 @@ class DaysList extends React.Component {
         </TouchableHighlight>
         <FlatList
           data={daysList}
+          keyExtractor={(item) => item.date.toString()}
           renderItem={({ item }) => {
             const day = DAYS[moment(`${item.date} ${item.month} ${this.props.year}`, 'D MMM YYYY').day()]
             const isWeekend = day === 'Sun' || day === 'Sat';
             const fontColor = isWeekend ? '#ffc0cb' : STYLES.themeColor;
-
+            const isToday = moment().date() === item.date && moment().month() === MONTHS.indexOf(item.month) && moment().year() === Number(this.props.year);
             return (
               <>
                 <TouchableHighlight onPress={() => this.setVisible(item.date, item.month)}>
-                  <View style={styles.itemContainer}>
+                  <View style={{...styles.itemContainer, backgroundColor: isToday ? '#ccc' : 'white' }}>
                     <View style={styles.dayDetails}>
                       <Text style={{ ...styles.upperRow, color: fontColor }}>{item.date} {item.month}</Text>
                       <Text style={{ ...styles.lowerRow, color: fontColor }}>{day}</Text>
@@ -66,7 +67,6 @@ class DaysList extends React.Component {
               </>
             )
           }}
-          keyExtractor={(item) => item.date.toString()}
         />
       </View>
     )
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     borderBottomColor: STYLES.themeColor,
     padding: 10,
     flexDirection: 'row',
+    backgroundColor: STYLES.themeColor
   },
   itemText: {
   },
