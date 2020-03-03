@@ -85,9 +85,9 @@ export const fetchCurrentItems = (day, month, year) => (dispatch) => {
   })
 }
 
-export const insertItemAndEntry = (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date) => dispatch => {
+export const insertItemAndEntry = (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId) => dispatch => {
   dispatch(setLoadingStatus(true));
-  return addOrReplaceItem({itemName, unit, price})
+  return addOrReplaceItem({itemName, unit, price, itemId})
   .then(itemId => {
     dispatch(fetchItems());
     if (applyWholeMonthChecked) {
@@ -110,6 +110,7 @@ export const removeItem = (day, month, year, itemId, deleteForWholeMonth) => dis
   .then(() => {
     dispatch(fetchEntries(month, year));
     dispatch(fetchCurrentItems(day, month, year));
+    dispatch(setMonthlySum(month, year));
     dispatch(setLoadingStatus(false));
   })
 }

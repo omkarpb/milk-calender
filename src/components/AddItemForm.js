@@ -8,8 +8,10 @@ import { STYLES, UNITS } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
 class AddItemForm extends React.Component {
-  static navigationOptions = {
-    title: 'Add Item',
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: navigation.getParam('action') === 'edit' ? 'Edit Item' : 'Add Item',
+    }
   };
   constructor(props) {
     super(props);
@@ -18,6 +20,7 @@ class AddItemForm extends React.Component {
       price: '',
       quantity: '',
       unit: '',
+      itemId: '',
       items: props.navigation.getParam('items'),
       date: props.navigation.getParam('date'),
       month: props.navigation.getParam('month'),
@@ -64,19 +67,19 @@ class AddItemForm extends React.Component {
 
     this.setState({ itemNames, unitsList });
     if (this.state.item) {
-      const { itemName, price, unit, quantity } = this.state.item;
+      const { itemName, price, unit, quantity, itemId } = this.state.item;
       this.setState({
         itemName,
         price,
         unit,
-        quantity
+        quantity,
+        itemId
       })
     }
   }
 
   async saveItem() {
-    const { itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date } = this.state;
-
+    const { itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId } = this.state;
     this.setState({
       validity: {
         itemNameError: itemName.trim() === "",
@@ -90,7 +93,7 @@ class AddItemForm extends React.Component {
     }
 
     if (itemName.trim() !== "" && price.trim() !== "" && quantity.trim() !== "") {
-      this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date);
+      this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId);
 
       this.setState({
         itemName: '',
@@ -236,7 +239,7 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
   return {
-    insertItemAndEntry: (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date) => dispatch(insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date))
+    insertItemAndEntry: (itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId) => dispatch(insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId))
   }
 }
 export default connect(null, mapDispatchToProps)(AddItemForm);

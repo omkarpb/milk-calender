@@ -32,7 +32,7 @@ export default function DayItemDetailsScreen(props) {
                   name='edit'
                   type='font-awesome'
                   color={STYLES.themeColor}
-                  onPress={() => props.handleAddItemFormClick(item)} />
+                  onPress={() => props.handleAddItemFormClick('edit', item)} />
                 <Icon
                   raised
                   name='trash'
@@ -49,7 +49,7 @@ export default function DayItemDetailsScreen(props) {
         <View style={styles.buttonRow}>
           <Button
             title='Add Item'
-            onPress={() => props.handleAddItemFormClick()}
+            onPress={() => props.handleAddItemFormClick('add')}
             buttonStyle={styles.buttonStyle}
           />
           <Button title='Cancel' onPress={props.goBack} buttonStyle={styles.buttonStyle}></Button>

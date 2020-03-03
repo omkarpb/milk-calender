@@ -10,8 +10,8 @@ export async function addOrReplaceItem(newItem) {
     let id = uuid();
     if (data !== null) {
       items = JSON.parse(data);
-      const index = items.findIndex(item => item.itemName.toLowerCase() === newItem.itemName.toLowerCase());
-      if (index > -1) {
+      if (!!newItem.itemId) {
+        const index = items.findIndex(item => item.itemId === newItem.itemId);
         items[index] = Object.assign(items[index], newItem);
         id = items[index].itemId;
       } else {
@@ -59,6 +59,7 @@ export async function getItemsDetailsForDay(day, month, year) {
           quantity: item.quantity
         });
       });
+      console.log('getItemsDetailsForDay', itemsInfo)
       return itemsInfo;
     } else {
       return [];

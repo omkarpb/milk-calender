@@ -77,8 +77,8 @@ class DayItemDetailsContainer extends React.Component {
       <View>
         <DayItemDetailsScreen 
           items={currentItems}
-          handleAddItemFormClick={(item) => this.props.navigation.navigate('AddItemForm', {
-            items, date, month, year, item
+          handleAddItemFormClick={(action, item) => this.props.navigation.navigate('AddItemForm', {
+            items, date, month, year, item, action
           })}
           goBack={() => this.props.navigation.goBack()}
           deleteDialogVisible={this.state.deleteDialogVisible}
