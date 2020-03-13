@@ -109,10 +109,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   item: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: STYLES.themeColor,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    shadowColor: 'gray',
+    shadowOffset: { height: 5, width: 5},
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+    elevation: 5,
     padding: 10,
-
+    borderRadius: 3,
+    backgroundColor: 'white'
   },
   itemRow: {
     marginBottom: 10,

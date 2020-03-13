@@ -47,10 +47,15 @@ export default class MonthBillPage extends React.Component {
 
 const styles = StyleSheet.create({
   item: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: STYLES.themeColor,
+    margin: 10,
+    shadowColor: 'gray',
+    shadowOffset: { height: 5, width: 5},
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+    elevation: 5,
+    borderRadius: 3,
+    backgroundColor: 'white',
     padding: 10,
-
   },
   itemRow: {
     marginBottom: 10,

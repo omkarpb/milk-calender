@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, Text } from 'react-native';
+import { View, StyleSheet, TextInput, Text, Dimensions, UIManager, Animated, Keyboard } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { insertItemAndEntry } from '../actions';
 import { addOrReplaceItem, addDayEntry, getItem, addDataEntriesForWholeMonth } from '../storage';
 import { STYLES, UNITS } from '../constants';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+const { State: TextInputState } = TextInput;
 
 class AddItemForm extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -35,7 +36,8 @@ class AddItemForm extends React.Component {
         itemNameError: false,
         priceError: false,
         quantitu: false
-      }
+      },
+      shift: new Animated.Value(0),
     }
     this.onChangeValue = this.onChangeValue.bind(this);
     this.saveItem = this.saveItem.bind(this);
@@ -76,6 +78,10 @@ class AddItemForm extends React.Component {
         itemId
       })
     }
+
+    this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.handleKeyboardDidShow);
+    this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.handleKeyboardDidHide);
+
   }
 
   async saveItem() {
@@ -106,6 +112,10 @@ class AddItemForm extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.keyboardDidShowSub.remove();
+    this.keyboardDidHideSub.remove();
+  }
   async onSelectItemName(item) {
     const itemDetails = await getItem(item.id);
     if (itemDetails) {
@@ -118,10 +128,45 @@ class AddItemForm extends React.Component {
     }
   }
 
+  handleKeyboardDidShow = (event) => {
+    const { height: windowHeight } = Dimensions.get('window');
+    const keyboardHeight = event.endCoordinates.height;
+    const currentlyFocusedField = TextInputState.currentlyFocusedField();
+    UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
+      const fieldHeight = height;
+      const fieldTop = pageY;
+      const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+      if (gap >= 0) {
+        return;
+      }
+      Animated.timing(
+        this.state.shift,
+        {
+          toValue: gap,
+          duration: 1000,
+          useNativeDriver: true,
+        }
+      ).start();
+    });
+  }
+
+  handleKeyboardDidHide = () => {
+    Animated.timing(
+      this.state.shift,
+      {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }
+    ).start();
+  }
+
   render() {
+    const { shift } = this.state;
+
     return (
-      <View style={styles.formContainer}>
-        <Text>Name*</Text>
+      <Animated.View style={[styles.formContainer, { transform: [{translateY: shift}] }]}>
+        <Text>Name</Text>
         <SearchableDropdown
           items={this.state.itemNames}
           itemStyle={styles.dropdownItem}
@@ -145,7 +190,7 @@ class AddItemForm extends React.Component {
             }
           } />
         {!!this.state.validity.itemNameError && <Text style={styles.errorText}>Please enter item name</Text>}
-        <Text>Price*</Text>
+        <Text>Price</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('price', text)}
@@ -154,7 +199,7 @@ class AddItemForm extends React.Component {
           keyboardType='numeric' />
         {!!this.state.validity.priceError && <Text style={styles.errorText}>Please enter price</Text>}
 
-        <Text>Quantity*</Text>
+        <Text>Quantity</Text>
         <TextInput
           style={styles.textControl}
           onChangeText={text => this.onChangeValue('quantity', text)}
@@ -202,7 +247,7 @@ class AddItemForm extends React.Component {
             onPress={() => this.props.navigation.goBack()}
             buttonStyle={styles.button} />
         </View>
-      </View>
+      </Animated.View>
     );
   }
 }
@@ -212,11 +257,11 @@ const styles = StyleSheet.create({
     margin: 50,
   },
   textControl: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    height: 60,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
     marginBottom: 10,
-    padding: 10
+    // padding: 10
   },
   button: {
     padding: 10,
@@ -230,8 +275,11 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     padding: 10,
-    borderBottomColor: '#bbb',
-    borderBottomWidth: 1,
+    borderColor: '#bbb',
+    borderWidth: 1,
+    backgroundColor: '#eee',
+    margin: 5,
+    borderRadius: 3
   },
   errorText: {
     color: 'orange'

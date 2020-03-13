@@ -92,7 +92,12 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: STYLES.backgroundDark,
     flex: 1,
-    borderRadius: 3
+    borderRadius: 3,
+    shadowColor: 'gray',
+    shadowOffset: { height: 5, width: 5},
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+    elevation: 5
   },
   monthInputText: {
     fontSize: 20,

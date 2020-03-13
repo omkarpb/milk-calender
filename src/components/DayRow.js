@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet} from 'react-native';
+import {Chip} from 'react-native-paper';
 import {CURRENCY} from '../constants';
 
 export default function DayRow(props) {
@@ -23,7 +24,7 @@ export default function DayRow(props) {
       <View style={styles.itemDetails}>
         {(!!entry && entry.items.length > 0) && entry.items.map(element => {
             const currentItem = items.find(value => value.itemId === element.itemId) || {};
-            return (<Text style={styles.oneItem} key={element.itemId}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Text>)
+            return (<Chip style={styles.chipStyle} key={element.itemId}>{currentItem.itemName} {element.quantity} {currentItem.unit}</Chip>)
           })
         }
         {(!entry || (!!entry && entry.items.length === 0)) && <Text style={styles.oneItem}>No items added yet!</Text>}
@@ -52,5 +53,11 @@ const styles = StyleSheet.create({
   },
   priceValue: {
     fontSize: 25
+  },
+  chipStyle: {
+    margin: 5
+  },
+  wholeRow: {
+    // marginBottom: 10
   }
 })
