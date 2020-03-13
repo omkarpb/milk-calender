@@ -16,7 +16,7 @@ export default function DayItemDetailsScreen(props) {
           {props.loading && <LoaderOverlay />}
           {(!props.loading && items.length === 0) &&
             <View style={styles.noItemsTextContainer}>
-              <Text style={styles.textNote}>No Items added yet !</Text>
+              <Text style={styles.textNote}>No Items added!</Text>
             </View>
           }
 
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   noItemsTextContainer: {
     alignItems: 'center',
-    height: 200
+    height: 150
   },
   textNote: {
     fontSize: 20,

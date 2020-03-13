@@ -103,7 +103,6 @@ class DayItemDetailsContainer extends React.Component {
     const { date, month, year } = this.state;
     const { currentItems, items } = this.props;
 
-    console.log('date, month, year', date, month, year)
     const cost = this.calculateTotalCost(currentItems);
 
     return (
