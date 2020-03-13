@@ -44,8 +44,15 @@ class AddItemForm extends React.Component {
     this.onSelectItemName = this.onSelectItemName.bind(this);
   }
 
-  onChangeValue(key, text) {
+  onChangeValue(key, text, validityProp) {
     this.setState({ [key]: text });
+    if(validityProp !== undefined) {
+      this.setState({
+        validity: {
+          [validityProp]: text.trim().length === 0
+        }
+      })
+    }
   }
 
   componentDidMount() {
@@ -172,7 +179,7 @@ class AddItemForm extends React.Component {
           itemStyle={styles.dropdownItem}
           itemsContainerStyle={{ maxHeight: 140 }}
           resetValue={false}
-          onTextChange={(text) => this.onChangeValue('itemName', text)}
+          onTextChange={(text) => this.onChangeValue('itemName', text, 'itemNameError')}
           onItemSelect={(item) => this.onSelectItemName(item)}
           textInputProps={
             {
@@ -193,7 +200,7 @@ class AddItemForm extends React.Component {
         <Text>Price</Text>
         <TextInput
           style={styles.textControl}
-          onChangeText={text => this.onChangeValue('price', text)}
+          onChangeText={text => this.onChangeValue('price', text, 'priceError')}
           value={this.state.price.toString()}
           placeholder='Price per unit e.g. 45'
           keyboardType='numeric' />
@@ -202,7 +209,7 @@ class AddItemForm extends React.Component {
         <Text>Quantity</Text>
         <TextInput
           style={styles.textControl}
-          onChangeText={text => this.onChangeValue('quantity', text)}
+          onChangeText={text => this.onChangeValue('quantity', text, 'quantityError')}
           value={this.state.quantity.toString()}
           placeholder='Quantity'
           keyboardType='numeric'
