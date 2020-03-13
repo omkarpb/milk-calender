@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { STYLES, CURRENCY } from '../constants';
 import { Icon, Button, CheckBox } from 'react-native-elements';
+import { FAB } from 'react-native-paper';
 import DialogCustom from '../elements/DialogCustom';
 import LoaderOverlay from '../elements/LoaderOverlay';
 
@@ -46,18 +47,16 @@ export default function DayItemDetailsScreen(props) {
             </View>
           ))}
         </View>
-        <View style={styles.footer}>
-          <View>
-            <Text style={styles.totalCost}>Total Expenses of the day:  {CURRENCY} {totalCost}/-</Text>
-          </View>
-          <View style={styles.buttonRow}>
+        <View style={styles.totalCostContainer}>
+          <Text style={styles.totalCost}>Total: {CURRENCY} {totalCost}/-</Text>
+        </View>
+        {/* <View style={styles.buttonRow}>
             <Button
               title='Add Item'
               onPress={() => props.handleAddItemFormClick('add')}
               buttonStyle={styles.buttonStyle}
             />
-          </View>
-        </View>
+          </View> */}
         <DialogCustom
           visible={props.deleteDialogVisible}
           onDismiss={props.deleteDialogToggle}
@@ -74,14 +73,20 @@ export default function DayItemDetailsScreen(props) {
           />
         </DialogCustom>
       </ScrollView>
-
+      <FAB
+        style={styles.fab}
+        label="Add Item"
+        icon="plus"
+        onPress={() => props.handleAddItemFormClick('add')}
+        color={'white'}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   main: {
-    // flex: 1
+    justifyContent: 'flex-end'
   },
   mainContainer: {
     margin: 10,
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
     shadowColor: 'gray',
-    shadowOffset: { height: 5, width: 5},
+    shadowOffset: { height: 5, width: 5 },
     shadowOpacity: 0.5,
     shadowRadius: 3,
     elevation: 5,
@@ -141,9 +146,16 @@ const styles = StyleSheet.create({
   buttonRow: {
     margin: 10
   },
+  totalCostContainer: {
+    margin: 10,
+    marginBottom: 60,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10
+  },
   totalCost: {
     fontSize: 30,
-    margin: 10
+    
   },
   noItemsTextContainer: {
     alignItems: 'center',
@@ -154,5 +166,12 @@ const styles = StyleSheet.create({
   },
   footer: {
     bottom: 0
-  }
+  },
+  fab: {
+    position: 'absolute',
+    margin: 10,
+    right: 0,
+    bottom: 0,
+    backgroundColor: STYLES.themeColor,
+  },
 });

@@ -140,7 +140,7 @@ class AddItemForm extends React.Component {
     UIManager.measure(currentlyFocusedField, (originX, originY, width, height, pageX, pageY) => {
       const fieldHeight = height;
       const fieldTop = pageY;
-      const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight);
+      const gap = (windowHeight - keyboardHeight) - (fieldTop + fieldHeight) - 100;
       if (gap >= 0) {
         return;
       }
