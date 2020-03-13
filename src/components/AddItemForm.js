@@ -101,12 +101,10 @@ class AddItemForm extends React.Component {
       }
     });
 
-    if (unit.trim() === "") {
-      this.setState({unit: 'unit'});
-    }
+    let unitDefault = unit.trim() === "" ? 'unit' : unit;
 
     if (itemName.trim() !== "" && price.trim() !== "" && quantity.trim() !== "") {
-      this.props.insertItemAndEntry(itemName, unit, price, quantity, month, year, applyWholeMonthChecked, date, itemId);
+      this.props.insertItemAndEntry(itemName, unitDefault, price, quantity, month, year, applyWholeMonthChecked, date, itemId);
 
       this.setState({
         itemName: '',
