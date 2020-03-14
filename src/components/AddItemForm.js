@@ -9,28 +9,24 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 const { State: TextInputState } = TextInput;
 
 class AddItemForm extends React.Component {
-  static navigationOptions = ({navigation}) => {
-    return {
-      title: navigation.getParam('action') === 'edit' ? 'Edit Item' : 'Add Item',
-    }
-  };
   constructor(props) {
     super(props);
+    const {date, month, year, items, item} = props.route.params;
     this.state = {
       itemName: '',
       price: '',
       quantity: '',
       unit: '',
       itemId: '',
-      items: props.navigation.getParam('items'),
-      date: props.navigation.getParam('date'),
-      month: props.navigation.getParam('month'),
-      year: props.navigation.getParam('year'),
+      items,
+      date,
+      month,
+      year,
       itemNames: [],
       itemNameDialogVisible: false,
       applyWholeMonthChecked: false, // Apply for whole month
       selectedItemId: '',
-      item: props.navigation.getParam('item'),
+      item,
       unitsList: [],
       validity: {
         itemNameError: false,

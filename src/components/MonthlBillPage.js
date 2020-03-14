@@ -4,15 +4,11 @@ import { STYLES, CURRENCY } from '../constants';
 import { Icon, Button, CheckBox } from 'react-native-elements';
 
 export default class MonthBillPage extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: `${navigation.getParam('month')} ${navigation.getParam('year')} Bill`
-    }
-  }
+  
   constructor(props) {
     super(props);
     this.state = {
-      monthlySums: props.navigation.getParam('monthlySums')
+      monthlySums: props.route.params.monthlySums
     }
   }
 

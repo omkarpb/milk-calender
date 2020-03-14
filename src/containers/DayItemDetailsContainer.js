@@ -10,18 +10,13 @@ import DayItemDetailsScreen from '../components/DayItemDetailsScreen';
 import { fetchCurrentItems, fetchItems, removeItem } from '../actions';
 
 class DayItemDetailsContainer extends React.Component {
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: `${navigation.getParam('date')} ${navigation.getParam('month')}`
-    }
-  }
   constructor(props) {
     super(props);
+    const { date, month, year} = props.route.params;
     this.state = {
-      date: props.navigation.getParam('date'),
-      month: props.navigation.getParam('month'),
-      year: props.navigation.getParam('year'),
+      date,
+      month,
+      year,
       deleteDialogVisible: false,
       deleteFromWholeMonthChecked: false,
       deleteItem: {}
@@ -97,7 +92,6 @@ class DayItemDetailsContainer extends React.Component {
       month: MONTHS[prevDay.month()],
       year: prevDay.year().toString()
     });
-
   }
   render() {
     const { date, month, year } = this.state;
